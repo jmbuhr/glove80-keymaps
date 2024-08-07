@@ -2558,7 +2558,7 @@ behaviors {
         bindings = <&mo>, <&kp>;
     };
 
-    left_lower_mod: left_lower_mod_layer {
+    left_lower_mod: homey_left_lower_mod {
         compatible = "zmk,behavior-hold-tap";
         flavor = HOMEY_HOLDING_TYPE;
         hold-trigger-key-positions = <RIGHT_HAND_KEYS>;
@@ -2569,14 +2569,10 @@ behaviors {
         #endif
         require-prior-idle-ms = <HOMEY_STREAK_DECAY>;
         #binding-cells = <2>;
-        /* #ifdef ENFORCE_BILATERAL */
-        /* bindings = <&left_pinky_hold>, <&kp>; */
-        /* #else */
         bindings = <&kp>, <&kp>;
-        /* #endif */
     };
 
-    right_lower_mod: right_lower_mod_layer {
+    right_lower_mod: homey_right_lower_mod {
         compatible = "zmk,behavior-hold-tap";
         flavor = HOMEY_HOLDING_TYPE;
         hold-trigger-key-positions = <LEFT_HAND_KEYS>;
@@ -2587,11 +2583,7 @@ behaviors {
         #endif
         require-prior-idle-ms = <HOMEY_STREAK_DECAY>;
         #binding-cells = <2>;
-        /* #ifdef ENFORCE_BILATERAL */
-        /* bindings = <&left_pinky_hold>, <&kp>; */
-        /* #else */
         bindings = <&kp>, <&kp>;
-        /* #endif */
     };
 
     //////////////////////////////////////////////////////////////////////////
