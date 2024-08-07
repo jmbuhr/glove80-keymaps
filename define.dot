@@ -3,32 +3,6 @@ digraph settings {
 
   subgraph defaults {
 
-    OPERATING_SYSTEM -> "'L'"
-
-    COMBO_FIRING_DECAY -> NUMBER_50
-
-    HOMEY_HOLDING_TIME -> DIFFICULTY_LEVEL_HOLDING_TIME
-
-    HOMEY_STREAK_DECAY -> DIFFICULTY_LEVEL_STREAK_DECAY
-
-    INDEX_HOLDING_TIME -> DIFFICULTY_LEVEL_HOLDING_TIME
-
-    INDEX_STREAK_DECAY -> DIFFICULTY_LEVEL_STREAK_DECAY
-
-    PLAIN_HOLDING_TIME -> DIFFICULTY_LEVEL_HOLDING_TIME
-
-    PLAIN_STREAK_DECAY -> DIFFICULTY_LEVEL_STREAK_DECAY
-
-    SPACE_HOLDING_TIME -> DIFFICULTY_LEVEL_HOLDING_TIME
-
-    SPACE_STREAK_DECAY -> DIFFICULTY_LEVEL_STREAK_DECAY
-
-    RING1_FINGER_MOD -> LALT
-
-    RING2_FINGER_MOD -> RALT
-
-    INDEX_FINGER_MOD -> LSFT
-
     LEFT_PINKY_MOD -> PINKY_FINGER_MOD
 
     RIGHT_PINKY_MOD -> PINKY_FINGER_MOD
@@ -51,9 +25,9 @@ digraph settings {
 
     HOMEY_HOLDING_TYPE -> "\"tap-preferred\""
 
-    HOMEY_HOLDING_TIME -> NUMBER_240
+    HOMEY_HOLDING_TIME -> NUMBER_270
 
-    HOMEY_STREAK_DECAY -> NUMBER_160
+    HOMEY_STREAK_DECAY -> NUMBER_230
 
     HOMEY_REPEAT_DECAY -> NUMBER_300
 
@@ -67,7 +41,7 @@ digraph settings {
 
     INDEX_HOLDING_TYPE -> "\"tap-preferred\""
 
-    INDEX_HOLDING_TIME -> NUMBER_180
+    INDEX_HOLDING_TIME -> NUMBER_170
 
     INDEX_STREAK_DECAY -> NUMBER_100
 
@@ -79,8 +53,6 @@ digraph settings {
 
     PLAIN_STREAK_DECAY -> HOMEY_STREAK_DECAY
 
-    PLAIN_REPEAT_DECAY -> NUMBER_300
-
     THUMB_HOLDING_TYPE -> "\"balanced\""
 
     THUMB_HOLDING_TIME -> NUMBER_200
@@ -91,39 +63,39 @@ digraph settings {
 
     SPACE_HOLDING_TIME -> THUMB_HOLDING_TIME
 
-    SPACE_REPEAT_DECAY -> NUMBER_150
+    SPACE_REPEAT_DECAY -> THUMB_REPEAT_DECAY
 
-    PINKY_HOLDING_TYPE -> HOMEY_HOLDING_TYPE
+    PINKY_HOLDING_TYPE -> INDEX_HOLDING_TYPE
 
-    PINKY_CHORD_HOLDING_TYPE -> CHORD_HOLDING_TYPE
+    PINKY_CHORD_HOLDING_TYPE -> INDEX_HOLDING_TYPE
 
-    LEFT_PINKY_CHORD_HOLDING_TYPE -> PINKY_CHORD_HOLDING_TYPE
+    LEFT_PINKY_CHORD_HOLDING_TYPE -> INDEX_CHORD_HOLDING_TYPE
 
-    RIGHT_PINKY_CHORD_HOLDING_TYPE -> PINKY_CHORD_HOLDING_TYPE
+    RIGHT_PINKY_CHORD_HOLDING_TYPE -> INDEX_CHORD_HOLDING_TYPE
 
-    PINKY_HOLDING_TIME -> HOMEY_HOLDING_TIME
+    PINKY_HOLDING_TIME -> INDEX_HOLDING_TIME
 
     PINKY_CHORD_HOLDING_TIME -> CHORD_HOLDING_TIME
 
-    LEFT_PINKY_CHORD_HOLDING_TIME -> PINKY_CHORD_HOLDING_TIME
+    LEFT_PINKY_CHORD_HOLDING_TIME -> INDEX_CHORD_HOLDING_TIME
 
-    RIGHT_PINKY_CHORD_HOLDING_TIME -> PINKY_CHORD_HOLDING_TIME
+    RIGHT_PINKY_CHORD_HOLDING_TIME -> INDEX_CHORD_HOLDING_TIME
 
-    PINKY_STREAK_DECAY -> HOMEY_STREAK_DECAY
+    PINKY_STREAK_DECAY -> INDEX_STREAK_DECAY
 
-    PINKY_CHORD_STREAK_DECAY -> CHORD_STREAK_DECAY
+    PINKY_CHORD_STREAK_DECAY -> INDEX_STREAK_DECAY
 
-    LEFT_PINKY_CHORD_STREAK_DECAY -> PINKY_CHORD_STREAK_DECAY
+    LEFT_PINKY_CHORD_STREAK_DECAY -> INDEX_CHORD_STREAK_DECAY
 
-    RIGHT_PINKY_CHORD_STREAK_DECAY -> PINKY_CHORD_STREAK_DECAY
+    RIGHT_PINKY_CHORD_STREAK_DECAY -> INDEX_CHORD_STREAK_DECAY
 
-    PINKY_REPEAT_DECAY -> HOMEY_REPEAT_DECAY
+    PINKY_REPEAT_DECAY -> INDEX_REPEAT_DECAY
 
-    PINKY_CHORD_REPEAT_DECAY -> CHORD_REPEAT_DECAY
+    PINKY_CHORD_REPEAT_DECAY -> INDEX_REPEAT_DECAY
 
-    LEFT_PINKY_CHORD_REPEAT_DECAY -> PINKY_CHORD_REPEAT_DECAY
+    LEFT_PINKY_CHORD_REPEAT_DECAY -> INDEX_CHORD_REPEAT_DECAY
 
-    RIGHT_PINKY_CHORD_REPEAT_DECAY -> PINKY_CHORD_REPEAT_DECAY
+    RIGHT_PINKY_CHORD_REPEAT_DECAY -> INDEX_CHORD_REPEAT_DECAY
 
     RING1_HOLDING_TYPE -> HOMEY_HOLDING_TYPE
 
@@ -253,13 +225,13 @@ digraph settings {
 
     RIGHT_INDEX_CHORD_REPEAT_DECAY -> INDEX_CHORD_REPEAT_DECAY
 
-    LEFT_PINKY_HOLDING_TYPE -> PINKY_HOLDING_TYPE
+    LEFT_PINKY_HOLDING_TYPE -> INDEX_HOLDING_TYPE
 
-    LEFT_PINKY_HOLDING_TIME -> PINKY_HOLDING_TIME
+    LEFT_PINKY_HOLDING_TIME -> INDEX_HOLDING_TIME
 
-    LEFT_PINKY_STREAK_DECAY -> PINKY_STREAK_DECAY
+    LEFT_PINKY_STREAK_DECAY -> INDEX_STREAK_DECAY
 
-    LEFT_PINKY_REPEAT_DECAY -> PINKY_REPEAT_DECAY
+    LEFT_PINKY_REPEAT_DECAY -> INDEX_REPEAT_DECAY
 
     RIGHT_PINKY_HOLDING_TYPE -> PINKY_HOLDING_TYPE
 
@@ -653,39 +625,7 @@ digraph settings {
 
     RIGHT_MIDDY_INDEX_REPEAT_DECAY -> RIGHT_MIDDY_CHORD_REPEAT_DECAY
 
-    STICKY_1SHOT_DECAY -> NUMBER_500
-
-    STICKY_HOLDING_TIME -> CHORD_HOLDING_TIME
-
-    SELECT_WORD_DELAY -> NUMBER_1
-
-    UNICODE_TAP_DELAY -> NUMBER_1
-
-    UNICODE_SEQ_DELAY -> NUMBER_10
-
-    COMPOSE_KEY_LINUX -> RALT
-
-    EMOJI_GENDER_SIGN_PRESET -> "'N'"
-
-    EMOJI_SKIN_TONE_PRESET -> "'N'"
-
-    EMOJI_HAIR_STYLE_PRESET -> "'N'"
-
-    MOUSE_MOTION_DELAY -> NUMBER_0
-
-    MOUSE_MOTION_ACCELERATION_EXPONENT -> NUMBER_1
-
-    MOUSE_MOTION_TIME_TO_MAXIMUM_SPEED -> NUMBER_300
-
-    MOUSE_MOTION_MAXIMUM_SPEED -> NUMBER_600
-
-    MOUSE_SCROLL_DELAY -> NUMBER_0
-
-    MOUSE_SCROLL_ACCELERATION_EXPONENT -> NUMBER_0
-
-    MOUSE_SCROLL_TIME_TO_MAXIMUM_SPEED -> NUMBER_300
-
-    MOUSE_SCROLL_MAXIMUM_SPEED -> NUMBER_10
+    CAPPY_HOLDING_TIME -> NUMBER_200
 
   }
 
@@ -693,41 +633,25 @@ digraph settings {
     graph [rank=same]
 
     
-      "'L'" [label="'L'", style=filled, fillcolor=cyan, shape=diamond]
-    
       "\"tap-preferred\"" [label="\"tap-preferred\"", style=filled, fillcolor=cyan, shape=diamond]
     
       "\"balanced\"" [label="\"balanced\"", style=filled, fillcolor=cyan, shape=diamond]
     
-      "'N'" [label="'N'", style=filled, fillcolor=cyan, shape=diamond]
-    
 
     
-      NUMBER_50 [label="50", style=filled, fillcolor=yellow, shape=diamond]
+      NUMBER_270 [label="270", style=filled, fillcolor=yellow, shape=diamond]
     
-      NUMBER_240 [label="240", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_160 [label="160", style=filled, fillcolor=yellow, shape=diamond]
+      NUMBER_230 [label="230", style=filled, fillcolor=yellow, shape=diamond]
     
       NUMBER_300 [label="300", style=filled, fillcolor=yellow, shape=diamond]
     
       NUMBER_150 [label="150", style=filled, fillcolor=yellow, shape=diamond]
     
-      NUMBER_180 [label="180", style=filled, fillcolor=yellow, shape=diamond]
+      NUMBER_170 [label="170", style=filled, fillcolor=yellow, shape=diamond]
     
       NUMBER_100 [label="100", style=filled, fillcolor=yellow, shape=diamond]
     
       NUMBER_200 [label="200", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_500 [label="500", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_1 [label="1", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_10 [label="10", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_0 [label="0", style=filled, fillcolor=yellow, shape=diamond]
-    
-      NUMBER_600 [label="600", style=filled, fillcolor=yellow, shape=diamond]
     
   }
 }
