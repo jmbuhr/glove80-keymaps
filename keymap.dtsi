@@ -161,7 +161,7 @@
 // after tapping a key to hold it again in order to make it auto-repeat.
 // Disabled for quicker SPACE followed by Symbols on the lower layer
 //
-#define THUMB_REPEAT_DECAY -1
+// #define THUMB_REPEAT_DECAY -1
 
 ///
 // Glove80 key positions index for positional hold-tap
@@ -1726,9 +1726,7 @@ behaviors {
         compatible = "zmk,behavior-hold-tap";
         flavor = THUMB_HOLDING_TYPE;
         tapping-term-ms = <THUMB_HOLDING_TIME>;
-        #ifdef ENABLE_KEY_REPEAT
-        quick-tap-ms = <THUMB_REPEAT_DECAY>; // set to -1, disabled
-        #endif
+        //quick-tap-ms = <THUMB_REPEAT_DECAY>; // disabled
         #binding-cells = <2>;
         bindings = <&mo>, <&kp>;
     };

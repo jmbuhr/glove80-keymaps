@@ -1,5 +1,4 @@
 
-
 /*
  * Copyright (c) 2020 The ZMK Contributors
  * Copyright (c) 2023 Innaworks Development Limited, trading as MoErgo
@@ -23,22 +22,21 @@
 
 /* Automatically generated layer name #define */
 #define LAYER_QWERTY 0
-#define LAYER_Typing 1
-#define LAYER_LeftPinky 2
-#define LAYER_LeftRing1 3
-#define LAYER_LeftRing2 4
-#define LAYER_LeftMiddy 5
-#define LAYER_LeftIndex 6
-#define LAYER_RightPinky 7
-#define LAYER_RightRing1 8
-#define LAYER_RightRing2 9
-#define LAYER_RightMiddy 10
-#define LAYER_RightIndex 11
-#define LAYER_Factory 12
-#define LAYER_Magic 13
-#define LAYER_lower 14
-#define LAYER_both 15
-#define LAYER_gaming 16
+#define LAYER_LeftPinky 1
+#define LAYER_LeftRing1 2
+#define LAYER_LeftRing2 3
+#define LAYER_LeftMiddy 4
+#define LAYER_LeftIndex 5
+#define LAYER_RightPinky 6
+#define LAYER_RightRing1 7
+#define LAYER_RightRing2 8
+#define LAYER_RightMiddy 9
+#define LAYER_RightIndex 10
+#define LAYER_Factory 11
+#define LAYER_Magic 12
+#define LAYER_lower 13
+#define LAYER_both 14
+#define LAYER_gaming 15
 
 /* To deal with the situation where there is no Lower layer, to keep &lower happy */
 #ifndef LAYER_Lower
@@ -278,13 +276,33 @@
 
 /* Custom Defined Behaviors */
 / {
-//////////////////////////////////////////////////////////////////////////////
 //
 // Based on Sunaku's Keymap v34 -- "Glorious Engrammer"
 // - https://github.com/sunaku/glove80-keymaps
 // and then simplified for my needs
 //
-//////////////////////////////////////////////////////////////////////////////
+// Miryoku layers and home row mods (ported from my QMK endgame)
+// - https://sunaku.github.io/home-row-mods.html#porting-to-zmk
+// - https://github.com/urob/zmk-config#timeless-homerow-mods
+//
+//////////////////////////////////////////////////////////////////////////
+
+//
+// ENFORCE_BILATERAL cancels out single-handed home row mods activation by
+// releasing any currently pressed mods and replacing them with plain taps.
+//
+// NOTE: You may still encounter "flashing mods" where an operating system
+// action is triggered by the release of mods, such as LGUI which launches
+// the Windows Start Menu and LALT which opens the Microsoft Office Ribbon.
+//
+#define ENFORCE_BILATERAL
+#define EXCLUDE_RIGHT_PINKY_FROM_BILATERAL
+
+//
+// ENABLE_KEY_REPEAT allows "tap then hold" repetition of the tap portion
+// of home row mods and layer access keys.
+//
+#define ENABLE_KEY_REPEAT
 
 #define PINKY_FINGER_MOD LSFT
 #define RING1_FINGER_MOD LCTL
@@ -292,11 +310,332 @@
 #define MIDDY_FINGER_MOD LALT
 #define INDEX_FINGER_MOD LGUI
 
-#define CAPPY_HOLDING_TIME 200
+//
+// HOMEY_HOLDING_TIME defines how long you need to hold (milliseconds)
+// home row mod keys in order to send their modifiers to the computer
+// (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
+//
 #define HOMEY_HOLDING_TIME 200
-#define INDEX_HOLDING_TIME 200
-#define PLAIN_HOLDING_TIME 200
-#define SPACE_HOLDING_TIME 200
+// holding time for the same keys on the lower layer
+// for combindations like ctrl+gui+Number
+#define LOWER_HOMEY_HOLDING_TIME 130
+
+//
+// HOMEY_STREAK_DECAY defines how long you need to wait (milliseconds)
+// after typing before you can use home row mods again.  It prevents
+// unintended activation of home row mods when you're actively typing.
+//
+#define HOMEY_STREAK_DECAY 230
+#define LOWER_HOMEY_STREAK_DECAY 150
+
+//
+// SHIFTY_HOLDING_TIME defines how long you need to hold (milliseconds)
+// index finger keys in order to send their modifiers to the computer
+// (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
+//
+#define SHIFTY_HOLDING_TIME 170
+
+//
+// SHIFTY_STREAK_DECAY defines how long you need to wait (milliseconds)
+// after typing before you can use home row mods again.  It prevents
+// unintended activation of home row mods when you're actively typing.
+// used for Shift, so also used for Pinky
+//
+#define SHIFTY_STREAK_DECAY 100
+
+
+//
+// The following settings let you configure mods individually, per finger:
+//
+#define LEFT_PINKY_MOD  PINKY_FINGER_MOD
+#define RIGHT_PINKY_MOD PINKY_FINGER_MOD
+#define LEFT_RING1_MOD  RING1_FINGER_MOD
+#define RIGHT_RING1_MOD RING1_FINGER_MOD
+#define LEFT_RING2_MOD  RING2_FINGER_MOD
+#define RIGHT_RING2_MOD RING2_FINGER_MOD
+#define LEFT_MIDDY_MOD  MIDDY_FINGER_MOD
+#define RIGHT_MIDDY_MOD MIDDY_FINGER_MOD
+#define LEFT_INDEX_MOD  INDEX_FINGER_MOD
+#define RIGHT_INDEX_MOD INDEX_FINGER_MOD
+
+//
+// HOMEY_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
+// for the ring, middle and index fingers on home row keys.
+// NOTE: not pinky, used for Shift
+//
+#define HOMEY_HOLDING_TYPE "tap-preferred"
+
+//
+// HOMEY_REPEAT_DECAY defines how much time you have left (milliseconds)
+// after tapping a key to hold it again in order to make it auto-repeat.
+//
+#define HOMEY_REPEAT_DECAY 300
+
+//
+// CHORD_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
+// for chorded home row mods (secondary keypresses in multi-mod chords).
+//
+#define CHORD_HOLDING_TYPE HOMEY_HOLDING_TYPE
+
+//
+// CHORD_HOLDING_TIME defines how long you need to hold (milliseconds)
+// home row mod keys in order to send their modifiers to the computer
+// (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
+// This is specifically for secondary keypresses in multi-mod chords.
+//
+#define CHORD_HOLDING_TIME 150
+
+//
+// CHORD_STREAK_DECAY defines how long you need to wait (milliseconds)
+// after typing before you can use home row mods again.  It prevents
+// unintended activation of home row mods when you're actively typing
+// This is specifically for secondary keypresses in multi-mod chords.
+//
+#define CHORD_STREAK_DECAY HOMEY_STREAK_DECAY
+
+//
+// CHORD_REPEAT_DECAY defines how much time you have left (milliseconds)
+// after tapping a key to hold it again in order to make it auto-repeat.
+// This is specifically for secondary keypresses in multi-mod chords.
+//
+#define CHORD_REPEAT_DECAY HOMEY_REPEAT_DECAY
+
+//
+// SHIFTY_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
+// for index fingers (which Miryoku assigns to Shift) on home row keys.
+//
+// NOTE: The "tap-preferred" flavor of ZMK hold-tap for index finger keys
+// allows faster activation of the Shift modifier (without having to wait
+// for the modified key to be released as the "balanced" flavor requires).
+// Typing streaks and the `hold-trigger-on-release` setting are disabled
+// for the index fingers so as not to hinder their speed and dexterity.
+//
+#define SHIFTY_HOLDING_TYPE "tap-preferred"
+
+//
+// SHIFTY_REPEAT_DECAY defines how much time you have left (milliseconds)
+// after tapping a key to hold it again in order to make it auto-repeat.
+//
+#define SHIFTY_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
+
+//
+// THUMB_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
+// for the thumbs (which are assigned to 6 layers in the Miryoku system).
+//
+// NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
+// activation for the symbol layer (if the tapped symbol key is released
+// while the thumb layer key is still held down) for quicker programming.
+//
+#define THUMB_HOLDING_TYPE "balanced"
+
+//
+// THUMB_HOLDING_TIME defines how long you need to hold (milliseconds)
+// a thumb key to activate a layer.  Shorter holds are treated as taps.
+//
+#define THUMB_HOLDING_TIME 150
+
+//
+// THUMB_REPEAT_DECAY defines how much time you have left (milliseconds)
+// after tapping a key to hold it again in order to make it auto-repeat.
+// Disabled for quicker SPACE followed by Symbols on the lower layer
+//
+// #define THUMB_REPEAT_DECAY -1
+
+///
+// Glove80 key positions index for positional hold-tap
+//
+// |------------------------|------------------------|
+// | LEFT_HAND_KEYS         |        RIGHT_HAND_KEYS |
+// |                        |                        |
+// |  0  1  2  3  4         |          5  6  7  8  9 |
+// | 10 11 12 13 14 15      |      16 17 18 19 20 21 |
+// | 22 23 24 25 26 27      |      28 29 30 31 32 33 |
+// | 34 35 36 37 38 39      |      40 41 42 43 44 45 |
+// | 46 47 48 49 50 51      |      58 59 60 61 62 63 |
+// | 64 65 66 67 68         |         75 76 77 78 79 |
+// |                69 52   |   57 74                |
+// |                 70 53  |  56 73                 |
+// |                  71 54 | 55 72                  |
+// |------------------------|------------------------|
+//
+#define LEFT_HAND_KEYS      \
+      0  1  2  3  4         \
+     10 11 12 13 14 15      \
+     22 23 24 25 26 27      \
+     34 35 36 37 38 39      \
+     46 47 48 49 50 51      \
+     64 65 66 67 68
+#define RIGHT_HAND_KEYS     \
+                                       5  6  7  8  9 \
+                                   16 17 18 19 20 21 \
+                                   28 29 30 31 32 33 \
+                                   40 41 42 43 44 45 \
+                                   58 59 60 61 62 63 \
+                                      75 76 77 78 79
+#define THUMB_KEYS          \
+                    69 52       57 74                \
+                     70 53     56 73                 \
+                      71 54   55 72
+
+#define RIGHT_THUMB_KEYS          \
+                       57 74                \
+                      56 73                 \
+                     55 72
+
+#define LEFT_THUMB_KEYS          \
+                    69 52 \
+                     70 53 \
+                      71 54
+
+#define LEFT_PINKY_KEY  KEY_LH_C5R4
+#define LEFT_RING1_KEY  KEY_LH_C4R4
+#define LEFT_RING2_KEY  KEY_LH_C4R3
+#define LEFT_MIDDY_KEY  KEY_LH_C3R4
+#define LEFT_INDEX_KEY  KEY_LH_C2R4
+
+#define RIGHT_PINKY_KEY KEY_RH_C5R4
+#define RIGHT_RING1_KEY KEY_RH_C4R4
+#define RIGHT_RING2_KEY KEY_RH_C4R3
+#define RIGHT_MIDDY_KEY KEY_RH_C3R4
+#define RIGHT_INDEX_KEY KEY_RH_C2R4
+
+//
+// Home row mods with bilateral combinations support
+//
+
+#define PINKY_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
+#define PINKY_CHORD_HOLDING_TYPE SHIFTY_HOLDING_TYPE
+#define PINKY_CHORD_REPEAT_DECAY SHIFTY_REPEAT_DECAY
+#define PINKY_CHORD_STREAK_DECAY SHIFTY_STREAK_DECAY
+#define PINKY_HOLDING_TIME SHIFTY_HOLDING_TIME
+#define PINKY_HOLDING_TYPE SHIFTY_HOLDING_TYPE
+#define PINKY_REPEAT_DECAY SHIFTY_REPEAT_DECAY
+#define PINKY_STREAK_DECAY SHIFTY_STREAK_DECAY
+
+#define RIGHT_PINKY_CHORD_HOLDING_TIME PINKY_CHORD_HOLDING_TIME
+#define RIGHT_PINKY_CHORD_HOLDING_TYPE PINKY_CHORD_HOLDING_TYPE
+#define RIGHT_PINKY_CHORD_REPEAT_DECAY PINKY_CHORD_REPEAT_DECAY
+#define RIGHT_PINKY_CHORD_STREAK_DECAY PINKY_CHORD_STREAK_DECAY
+#define RIGHT_PINKY_HOLDING_TIME PINKY_HOLDING_TIME
+#define RIGHT_PINKY_HOLDING_TYPE PINKY_HOLDING_TYPE
+#define RIGHT_PINKY_REPEAT_DECAY PINKY_REPEAT_DECAY
+#define RIGHT_PINKY_STREAK_DECAY PINKY_STREAK_DECAY
+#define LEFT_PINKY_CHORD_HOLDING_TIME PINKY_CHORD_HOLDING_TIME
+#define LEFT_PINKY_CHORD_HOLDING_TYPE PINKY_CHORD_HOLDING_TYPE
+#define LEFT_PINKY_CHORD_REPEAT_DECAY PINKY_CHORD_REPEAT_DECAY
+#define LEFT_PINKY_CHORD_STREAK_DECAY PINKY_CHORD_STREAK_DECAY
+#define LEFT_PINKY_HOLDING_TIME PINKY_HOLDING_TIME
+#define LEFT_PINKY_HOLDING_TYPE PINKY_HOLDING_TYPE
+#define LEFT_PINKY_REPEAT_DECAY PINKY_REPEAT_DECAY
+#define LEFT_PINKY_STREAK_DECAY PINKY_STREAK_DECAY
+
+
+#define RING1_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
+#define RING1_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
+#define RING1_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
+#define RING1_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
+#define RING1_HOLDING_TIME HOMEY_HOLDING_TIME
+#define RING1_HOLDING_TYPE HOMEY_HOLDING_TYPE
+#define RING1_REPEAT_DECAY HOMEY_REPEAT_DECAY
+#define RING1_STREAK_DECAY HOMEY_STREAK_DECAY
+
+#define RIGHT_RING1_CHORD_HOLDING_TIME RING1_CHORD_HOLDING_TIME
+#define RIGHT_RING1_CHORD_HOLDING_TYPE RING1_CHORD_HOLDING_TYPE
+#define RIGHT_RING1_CHORD_REPEAT_DECAY RING1_CHORD_REPEAT_DECAY
+#define RIGHT_RING1_CHORD_STREAK_DECAY RING1_CHORD_STREAK_DECAY
+#define RIGHT_RING1_HOLDING_TIME RING1_HOLDING_TIME
+#define RIGHT_RING1_HOLDING_TYPE RING1_HOLDING_TYPE
+#define RIGHT_RING1_REPEAT_DECAY RING1_REPEAT_DECAY
+#define RIGHT_RING1_STREAK_DECAY RING1_STREAK_DECAY
+#define LEFT_RING1_CHORD_HOLDING_TIME RING1_CHORD_HOLDING_TIME
+#define LEFT_RING1_CHORD_HOLDING_TYPE RING1_CHORD_HOLDING_TYPE
+#define LEFT_RING1_CHORD_REPEAT_DECAY RING1_CHORD_REPEAT_DECAY
+#define LEFT_RING1_CHORD_STREAK_DECAY RING1_CHORD_STREAK_DECAY
+#define LEFT_RING1_HOLDING_TIME RING1_HOLDING_TIME
+#define LEFT_RING1_HOLDING_TYPE RING1_HOLDING_TYPE
+#define LEFT_RING1_REPEAT_DECAY RING1_REPEAT_DECAY
+#define LEFT_RING1_STREAK_DECAY RING1_STREAK_DECAY
+
+
+#define RING2_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
+#define RING2_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
+#define RING2_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
+#define RING2_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
+#define RING2_HOLDING_TIME HOMEY_HOLDING_TIME
+#define RING2_HOLDING_TYPE HOMEY_HOLDING_TYPE
+#define RING2_REPEAT_DECAY HOMEY_REPEAT_DECAY
+#define RING2_STREAK_DECAY HOMEY_STREAK_DECAY
+
+#define RIGHT_RING2_CHORD_HOLDING_TIME RING2_CHORD_HOLDING_TIME
+#define RIGHT_RING2_CHORD_HOLDING_TYPE RING2_CHORD_HOLDING_TYPE
+#define RIGHT_RING2_CHORD_REPEAT_DECAY RING2_CHORD_REPEAT_DECAY
+#define RIGHT_RING2_CHORD_STREAK_DECAY RING2_CHORD_STREAK_DECAY
+#define RIGHT_RING2_HOLDING_TIME RING2_HOLDING_TIME
+#define RIGHT_RING2_HOLDING_TYPE RING2_HOLDING_TYPE
+#define RIGHT_RING2_REPEAT_DECAY RING2_REPEAT_DECAY
+#define RIGHT_RING2_STREAK_DECAY RING2_STREAK_DECAY
+#define LEFT_RING2_CHORD_HOLDING_TIME RING2_CHORD_HOLDING_TIME
+#define LEFT_RING2_CHORD_HOLDING_TYPE RING2_CHORD_HOLDING_TYPE
+#define LEFT_RING2_CHORD_REPEAT_DECAY RING2_CHORD_REPEAT_DECAY
+#define LEFT_RING2_CHORD_STREAK_DECAY RING2_CHORD_STREAK_DECAY
+#define LEFT_RING2_HOLDING_TIME RING2_HOLDING_TIME
+#define LEFT_RING2_HOLDING_TYPE RING2_HOLDING_TYPE
+#define LEFT_RING2_REPEAT_DECAY RING2_REPEAT_DECAY
+#define LEFT_RING2_STREAK_DECAY RING2_STREAK_DECAY
+
+
+#define MIDDY_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
+#define MIDDY_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
+#define MIDDY_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
+#define MIDDY_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
+#define MIDDY_HOLDING_TIME HOMEY_HOLDING_TIME
+#define MIDDY_HOLDING_TYPE HOMEY_HOLDING_TYPE
+#define MIDDY_REPEAT_DECAY HOMEY_REPEAT_DECAY
+#define MIDDY_STREAK_DECAY HOMEY_STREAK_DECAY
+
+#define RIGHT_MIDDY_CHORD_HOLDING_TIME MIDDY_CHORD_HOLDING_TIME
+#define RIGHT_MIDDY_CHORD_HOLDING_TYPE MIDDY_CHORD_HOLDING_TYPE
+#define RIGHT_MIDDY_CHORD_REPEAT_DECAY MIDDY_CHORD_REPEAT_DECAY
+#define RIGHT_MIDDY_CHORD_STREAK_DECAY MIDDY_CHORD_STREAK_DECAY
+#define RIGHT_MIDDY_HOLDING_TIME MIDDY_HOLDING_TIME
+#define RIGHT_MIDDY_HOLDING_TYPE MIDDY_HOLDING_TYPE
+#define RIGHT_MIDDY_REPEAT_DECAY MIDDY_REPEAT_DECAY
+#define RIGHT_MIDDY_STREAK_DECAY MIDDY_STREAK_DECAY
+#define LEFT_MIDDY_CHORD_HOLDING_TIME MIDDY_CHORD_HOLDING_TIME
+#define LEFT_MIDDY_CHORD_HOLDING_TYPE MIDDY_CHORD_HOLDING_TYPE
+#define LEFT_MIDDY_CHORD_REPEAT_DECAY MIDDY_CHORD_REPEAT_DECAY
+#define LEFT_MIDDY_CHORD_STREAK_DECAY MIDDY_CHORD_STREAK_DECAY
+#define LEFT_MIDDY_HOLDING_TIME MIDDY_HOLDING_TIME
+#define LEFT_MIDDY_HOLDING_TYPE MIDDY_HOLDING_TYPE
+#define LEFT_MIDDY_REPEAT_DECAY MIDDY_REPEAT_DECAY
+#define LEFT_MIDDY_STREAK_DECAY MIDDY_STREAK_DECAY
+
+
+#define INDEX_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
+#define INDEX_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
+#define INDEX_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
+#define INDEX_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
+#define INDEX_HOLDING_TIME HOMEY_HOLDING_TIME
+#define INDEX_HOLDING_TYPE HOMEY_HOLDING_TYPE
+#define INDEX_REPEAT_DECAY HOMEY_REPEAT_DECAY
+#define INDEX_STREAK_DECAY HOMEY_STREAK_DECAY
+
+#define RIGHT_INDEX_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
+#define RIGHT_INDEX_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
+#define RIGHT_INDEX_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
+#define RIGHT_INDEX_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
+#define RIGHT_INDEX_HOLDING_TIME INDEX_HOLDING_TIME
+#define RIGHT_INDEX_HOLDING_TYPE INDEX_HOLDING_TYPE
+#define RIGHT_INDEX_REPEAT_DECAY INDEX_REPEAT_DECAY
+#define RIGHT_INDEX_STREAK_DECAY INDEX_STREAK_DECAY
+#define LEFT_INDEX_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
+#define LEFT_INDEX_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
+#define LEFT_INDEX_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
+#define LEFT_INDEX_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
+#define LEFT_INDEX_HOLDING_TIME INDEX_HOLDING_TIME
+#define LEFT_INDEX_HOLDING_TYPE INDEX_HOLDING_TYPE
+#define LEFT_INDEX_REPEAT_DECAY INDEX_REPEAT_DECAY
+#define LEFT_INDEX_STREAK_DECAY INDEX_STREAK_DECAY
 
 // OS specific keycodes
 #define OPERATING_SYSTEM 1 // linux
@@ -447,571 +786,6 @@
 
 behaviors {
 
-    //////////////////////////////////////////////////////////////////////////
-    //
-    // Miryoku layers and home row mods (ported from my QMK endgame)
-    // - https://sunaku.github.io/home-row-mods.html#porting-to-zmk
-    // - https://github.com/urob/zmk-config#timeless-homerow-mods
-    //
-    //////////////////////////////////////////////////////////////////////////
-
-    //
-    // ENFORCE_BILATERAL cancels out single-handed home row mods activation by
-    // releasing any currently pressed mods and replacing them with plain taps.
-    //
-    // NOTE: You may still encounter "flashing mods" where an operating system
-    // action is triggered by the release of mods, such as LGUI which launches
-    // the Windows Start Menu and LALT which opens the Microsoft Office Ribbon.
-    //
-    #define ENFORCE_BILATERAL
-    #define EXCLUDE_RIGHT_PINKY_FROM_BILATERAL
-
-    //
-    // ENABLE_KEY_REPEAT allows "tap then hold" repetition of the tap portion
-    // of home row mods and layer access keys.  You can keep this disabled if
-    // you prefer to use the &plain overlay method of key repetition instead.
-    //
-    #define ENABLE_KEY_REPEAT
-
-    //
-    // The following settings let you configure mods individually, per finger:
-    //
-    #ifndef LEFT_PINKY_MOD
-    #define LEFT_PINKY_MOD  PINKY_FINGER_MOD
-    #endif
-    #ifndef RIGHT_PINKY_MOD
-    #define RIGHT_PINKY_MOD PINKY_FINGER_MOD
-    #endif
-    #ifndef LEFT_RING1_MOD
-    #define LEFT_RING1_MOD  RING1_FINGER_MOD
-    #endif
-    #ifndef RIGHT_RING1_MOD
-    #define RIGHT_RING1_MOD RING1_FINGER_MOD
-    #endif
-    #ifndef LEFT_RING2_MOD
-    #define LEFT_RING2_MOD  RING2_FINGER_MOD
-    #endif
-    #ifndef RIGHT_RING2_MOD
-    #define RIGHT_RING2_MOD RING2_FINGER_MOD
-    #endif
-    #ifndef LEFT_MIDDY_MOD
-    #define LEFT_MIDDY_MOD  MIDDY_FINGER_MOD
-    #endif
-    #ifndef RIGHT_MIDDY_MOD
-    #define RIGHT_MIDDY_MOD MIDDY_FINGER_MOD
-    #endif
-    #ifndef LEFT_INDEX_MOD
-    #define LEFT_INDEX_MOD  INDEX_FINGER_MOD
-    #endif
-    #ifndef RIGHT_INDEX_MOD
-    #define RIGHT_INDEX_MOD INDEX_FINGER_MOD
-    #endif
-
-    //
-    // HOMEY_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for the ring, middle and index fingers on home row keys.
-    // NOTE: not pinky, used for Shift
-    //
-    #ifndef HOMEY_HOLDING_TYPE
-    #define HOMEY_HOLDING_TYPE "tap-preferred"
-    #endif
-
-    //
-    // HOMEY_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // home row mod keys in order to send their modifiers to the computer
-    // (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
-    //
-    #ifndef HOMEY_HOLDING_TIME
-    #define HOMEY_HOLDING_TIME 200 // TAPPING_TERM + ALLOW_CROSSOVER_AFTER
-    #endif
-
-    //
-    // HOMEY_STREAK_DECAY defines how long you need to wait (milliseconds)
-    // after typing before you can use home row mods again.  It prevents
-    // unintended activation of home row mods when you're actively typing.
-    //
-    #ifndef HOMEY_STREAK_DECAY
-    #define HOMEY_STREAK_DECAY 230
-    #endif
-
-    //
-    // HOMEY_REPEAT_DECAY defines how much time you have left (milliseconds)
-    // after tapping a key to hold it again in order to make it auto-repeat.
-    //
-    #ifndef HOMEY_REPEAT_DECAY
-    #define HOMEY_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
-
-    //
-    // CHORD_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for chorded home row mods (secondary keypresses in multi-mod chords).
-    //
-    #ifndef CHORD_HOLDING_TYPE
-    #define CHORD_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-
-    //
-    // CHORD_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // home row mod keys in order to send their modifiers to the computer
-    // (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
-    // This is specifically for secondary keypresses in multi-mod chords.
-    //
-    #ifndef CHORD_HOLDING_TIME
-    #define CHORD_HOLDING_TIME 150
-    #endif
-
-    //
-    // CHORD_STREAK_DECAY defines how long you need to wait (milliseconds)
-    // after typing before you can use home row mods again.  It prevents
-    // unintended activation of home row mods when you're actively typing
-    // This is specifically for secondary keypresses in multi-mod chords.
-    //
-    #ifndef CHORD_STREAK_DECAY
-    #define CHORD_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-
-    //
-    // CHORD_REPEAT_DECAY defines how much time you have left (milliseconds)
-    // after tapping a key to hold it again in order to make it auto-repeat.
-    // This is specifically for secondary keypresses in multi-mod chords.
-    //
-    #ifndef CHORD_REPEAT_DECAY
-    #define CHORD_REPEAT_DECAY HOMEY_REPEAT_DECAY
-    #endif
-
-    //
-    // INDEX_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for index fingers (which Miryoku assigns to Shift) on home row keys.
-    //
-    // NOTE: The "tap-preferred" flavor of ZMK hold-tap for index finger keys
-    // allows faster activation of the Shift modifier (without having to wait
-    // for the modified key to be released as the "balanced" flavor requires).
-    // Typing streaks and the `hold-trigger-on-release` setting are disabled
-    // for the index fingers so as not to hinder their speed and dexterity.
-    //
-    #ifndef INDEX_HOLDING_TYPE
-    #define INDEX_HOLDING_TYPE "tap-preferred"
-    #endif
-
-    //
-    // INDEX_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // index finger keys in order to send their modifiers to the computer
-    // (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
-    //
-    #ifndef INDEX_HOLDING_TIME
-    #define INDEX_HOLDING_TIME 170
-    #endif
-
-    //
-    // INDEX_STREAK_DECAY defines how long you need to wait (milliseconds)
-    // after typing before you can use home row mods again.  It prevents
-    // unintended activation of home row mods when you're actively typing.
-    //
-    #ifndef INDEX_STREAK_DECAY
-    #define INDEX_STREAK_DECAY 100
-    #endif
-
-    //
-    // INDEX_REPEAT_DECAY defines how much time you have left (milliseconds)
-    // after tapping a key to hold it again in order to make it auto-repeat.
-    //
-    #ifndef INDEX_REPEAT_DECAY
-    #define INDEX_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
-
-    //
-    // PLAIN_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for index fingers (which Miryoku assigns to Shift) on home row keys.
-    //
-    // NOTE: The "tap-preferred" flavor of ZMK hold-tap for index finger keys
-    // allows faster activation of the Shift modifier (without having to wait
-    // for the modified key to be released as the "balanced" flavor requires).
-    // Typing streaks and the `hold-trigger-on-release` setting are disabled
-    // for the index fingers so as not to hinder their speed and dexterity.
-    //
-    #ifndef PLAIN_HOLDING_TYPE
-    #define PLAIN_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-
-    //
-    // PLAIN_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // index finger keys in order to send their modifiers to the computer
-    // (i.e. "register" them) for mod-click mouse usage (e.g. Shift-Click).
-    //
-    #ifndef PLAIN_HOLDING_TIME
-    #define PLAIN_HOLDING_TIME HOMEY_HOLDING_TIME
-    #endif
-
-    //
-    // PLAIN_STREAK_DECAY defines how long you need to wait (milliseconds)
-    // after typing before you can use home row mods again.  It prevents
-    // unintended activation of home row mods when you're actively typing.
-    //
-    #ifndef PLAIN_STREAK_DECAY
-    #define PLAIN_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-
-    //
-    // THUMB_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for the thumbs (which are assigned to 6 layers in the Miryoku system).
-    //
-    // NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
-    // activation for the symbol layer (if the tapped symbol key is released
-    // while the thumb layer key is still held down) for quicker programming.
-    //
-    #ifndef THUMB_HOLDING_TYPE
-    #define THUMB_HOLDING_TYPE "balanced"
-    #endif
-
-    //
-    // THUMB_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // a thumb key to activate a layer.  Shorter holds are treated as taps.
-    //
-    #ifndef THUMB_HOLDING_TIME
-    #define THUMB_HOLDING_TIME 200
-    #endif
-
-    //
-    // THUMB_REPEAT_DECAY defines how much time you have left (milliseconds)
-    // after tapping a key to hold it again in order to make it auto-repeat.
-    //
-    #ifndef THUMB_REPEAT_DECAY
-    #define THUMB_REPEAT_DECAY 300 // "tap then hold" for key auto-repeat
-    #endif
-
-    //
-    // SPACE_HOLDING_TYPE defines the flavor of ZMK hold-tap behavior to use
-    // for spacebar (assigned to the right thumb's home position by default).
-    //
-    // NOTE: The "balanced" flavor of ZMK hold-tap provides instant modifier
-    // activation for the symbol layer (if the tapped symbol key is released
-    // while the thumb layer key is still held down) for quicker programming.
-    //
-    #ifndef SPACE_HOLDING_TYPE
-    #define SPACE_HOLDING_TYPE THUMB_HOLDING_TYPE
-    #endif
-
-    //
-    // SPACE_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // the space thumb key to activate.  Shorter holds are treated as taps.
-    //
-    #ifndef SPACE_HOLDING_TIME
-    #define SPACE_HOLDING_TIME THUMB_HOLDING_TIME
-    #endif
-
-    //
-    // SPACE_REPEAT_DECAY defines how much time you have left (milliseconds)
-    // after tapping a key to hold it again in order to make it auto-repeat.
-    //
-    #ifndef SPACE_REPEAT_DECAY
-    #define SPACE_REPEAT_DECAY THUMB_REPEAT_DECAY
-    #endif
-
-    //
-    // Glove80 key positions index for positional hold-tap
-    //
-    // |------------------------|------------------------|
-    // | LEFT_HAND_KEYS         |        RIGHT_HAND_KEYS |
-    // |                        |                        |
-    // |  0  1  2  3  4         |          5  6  7  8  9 |
-    // | 10 11 12 13 14 15      |      16 17 18 19 20 21 |
-    // | 22 23 24 25 26 27      |      28 29 30 31 32 33 |
-    // | 34 35 36 37 38 39      |      40 41 42 43 44 45 |
-    // | 46 47 48 49 50 51      |      58 59 60 61 62 63 |
-    // | 64 65 66 67 68         |         75 76 77 78 79 |
-    // |                69 52   |   57 74                |
-    // |                 70 53  |  56 73                 |
-    // |                  71 54 | 55 72                  |
-    // |------------------------|------------------------|
-    //
-    #define LEFT_HAND_KEYS      \
-          0  1  2  3  4         \
-         10 11 12 13 14 15      \
-         22 23 24 25 26 27      \
-         34 35 36 37 38 39      \
-         46 47 48 49 50 51      \
-         64 65 66 67 68
-    #define RIGHT_HAND_KEYS     \
-                                           5  6  7  8  9 \
-                                       16 17 18 19 20 21 \
-                                       28 29 30 31 32 33 \
-                                       40 41 42 43 44 45 \
-                                       58 59 60 61 62 63 \
-                                          75 76 77 78 79
-    #define THUMB_KEYS          \
-                        69 52       57 74                \
-                         70 53     56 73                 \
-                          71 54   55 72
-
-    #define LEFT_PINKY_KEY  KEY_LH_C5R4
-    #define LEFT_RING1_KEY  KEY_LH_C4R4
-    #define LEFT_RING2_KEY  KEY_LH_C4R3
-    #define LEFT_MIDDY_KEY  KEY_LH_C3R4
-    #define LEFT_INDEX_KEY  KEY_LH_C2R4
-    #define LEFT_PLAIN_KEY  KEY_LH_C1R4
-
-    #define RIGHT_PINKY_KEY KEY_RH_C5R4
-    #define RIGHT_RING1_KEY KEY_RH_C4R4
-    #define RIGHT_RING2_KEY KEY_RH_C4R3
-    #define RIGHT_MIDDY_KEY KEY_RH_C3R4
-    #define RIGHT_INDEX_KEY KEY_RH_C2R4
-    #define RIGHT_PLAIN_KEY KEY_RH_C1R4
-
-    //
-    // Home row mods with bilateral combinations support
-    //
-    #ifndef PINKY_HOLDING_TYPE
-    #define PINKY_HOLDING_TYPE INDEX_HOLDING_TYPE
-    #endif
-    #ifndef PINKY_CHORD_HOLDING_TYPE
-    #define PINKY_CHORD_HOLDING_TYPE INDEX_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_CHORD_HOLDING_TYPE
-    #define LEFT_PINKY_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_CHORD_HOLDING_TYPE
-    #define RIGHT_PINKY_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef PINKY_HOLDING_TIME
-    #define PINKY_HOLDING_TIME INDEX_HOLDING_TIME
-    #endif
-    #ifndef PINKY_CHORD_HOLDING_TIME
-    #define PINKY_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_CHORD_HOLDING_TIME
-    #define LEFT_PINKY_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_CHORD_HOLDING_TIME
-    #define RIGHT_PINKY_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef PINKY_STREAK_DECAY
-    #define PINKY_STREAK_DECAY INDEX_STREAK_DECAY
-    #endif
-    #ifndef PINKY_CHORD_STREAK_DECAY
-    #define PINKY_CHORD_STREAK_DECAY INDEX_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_CHORD_STREAK_DECAY
-    #define LEFT_PINKY_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_CHORD_STREAK_DECAY
-    #define RIGHT_PINKY_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef PINKY_REPEAT_DECAY
-    #define PINKY_REPEAT_DECAY INDEX_REPEAT_DECAY
-    #endif
-    #ifndef PINKY_CHORD_REPEAT_DECAY
-    #define PINKY_CHORD_REPEAT_DECAY INDEX_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_PINKY_CHORD_REPEAT_DECAY
-    #define LEFT_PINKY_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_CHORD_REPEAT_DECAY
-    #define RIGHT_PINKY_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RING1_HOLDING_TYPE
-    #define RING1_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-    #ifndef RING1_CHORD_HOLDING_TYPE
-    #define RING1_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_CHORD_HOLDING_TYPE
-    #define LEFT_RING1_CHORD_HOLDING_TYPE RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_CHORD_HOLDING_TYPE
-    #define RIGHT_RING1_CHORD_HOLDING_TYPE RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RING1_HOLDING_TIME
-    #define RING1_HOLDING_TIME HOMEY_HOLDING_TIME
-    #endif
-    #ifndef RING1_CHORD_HOLDING_TIME
-    #define RING1_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_CHORD_HOLDING_TIME
-    #define LEFT_RING1_CHORD_HOLDING_TIME RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_CHORD_HOLDING_TIME
-    #define RIGHT_RING1_CHORD_HOLDING_TIME RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RING1_STREAK_DECAY
-    #define RING1_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-    #ifndef RING1_CHORD_STREAK_DECAY
-    #define RING1_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_CHORD_STREAK_DECAY
-    #define LEFT_RING1_CHORD_STREAK_DECAY RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_CHORD_STREAK_DECAY
-    #define RIGHT_RING1_CHORD_STREAK_DECAY RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RING1_REPEAT_DECAY
-    #define RING1_REPEAT_DECAY HOMEY_REPEAT_DECAY
-    #endif
-    #ifndef RING1_CHORD_REPEAT_DECAY
-    #define RING1_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_RING1_CHORD_REPEAT_DECAY
-    #define LEFT_RING1_CHORD_REPEAT_DECAY RING1_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RIGHT_RING1_CHORD_REPEAT_DECAY
-    #define RIGHT_RING1_CHORD_REPEAT_DECAY RING1_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RING2_HOLDING_TYPE
-    #define RING2_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-    #ifndef RING2_CHORD_HOLDING_TYPE
-    #define RING2_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_CHORD_HOLDING_TYPE
-    #define LEFT_RING2_CHORD_HOLDING_TYPE RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_CHORD_HOLDING_TYPE
-    #define RIGHT_RING2_CHORD_HOLDING_TYPE RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RING2_HOLDING_TIME
-    #define RING2_HOLDING_TIME HOMEY_HOLDING_TIME
-    #endif
-    #ifndef RING2_CHORD_HOLDING_TIME
-    #define RING2_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_CHORD_HOLDING_TIME
-    #define LEFT_RING2_CHORD_HOLDING_TIME RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_CHORD_HOLDING_TIME
-    #define RIGHT_RING2_CHORD_HOLDING_TIME RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RING2_STREAK_DECAY
-    #define RING2_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-    #ifndef RING2_CHORD_STREAK_DECAY
-    #define RING2_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_CHORD_STREAK_DECAY
-    #define LEFT_RING2_CHORD_STREAK_DECAY RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_CHORD_STREAK_DECAY
-    #define RIGHT_RING2_CHORD_STREAK_DECAY RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RING2_REPEAT_DECAY
-    #define RING2_REPEAT_DECAY HOMEY_REPEAT_DECAY
-    #endif
-    #ifndef RING2_CHORD_REPEAT_DECAY
-    #define RING2_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_RING2_CHORD_REPEAT_DECAY
-    #define LEFT_RING2_CHORD_REPEAT_DECAY RING2_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RIGHT_RING2_CHORD_REPEAT_DECAY
-    #define RIGHT_RING2_CHORD_REPEAT_DECAY RING2_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef MIDDY_HOLDING_TYPE
-    #define MIDDY_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-    #ifndef MIDDY_CHORD_HOLDING_TYPE
-    #define MIDDY_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_CHORD_HOLDING_TYPE
-    #define LEFT_MIDDY_CHORD_HOLDING_TYPE MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_CHORD_HOLDING_TYPE
-    #define RIGHT_MIDDY_CHORD_HOLDING_TYPE MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef MIDDY_HOLDING_TIME
-    #define MIDDY_HOLDING_TIME HOMEY_HOLDING_TIME
-    #endif
-    #ifndef MIDDY_CHORD_HOLDING_TIME
-    #define MIDDY_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_CHORD_HOLDING_TIME
-    #define LEFT_MIDDY_CHORD_HOLDING_TIME MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_CHORD_HOLDING_TIME
-    #define RIGHT_MIDDY_CHORD_HOLDING_TIME MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef MIDDY_STREAK_DECAY
-    #define MIDDY_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-    #ifndef MIDDY_CHORD_STREAK_DECAY
-    #define MIDDY_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_CHORD_STREAK_DECAY
-    #define LEFT_MIDDY_CHORD_STREAK_DECAY MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_CHORD_STREAK_DECAY
-    #define RIGHT_MIDDY_CHORD_STREAK_DECAY MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef MIDDY_REPEAT_DECAY
-    #define MIDDY_REPEAT_DECAY HOMEY_REPEAT_DECAY
-    #endif
-    #ifndef MIDDY_CHORD_REPEAT_DECAY
-    #define MIDDY_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_CHORD_REPEAT_DECAY
-    #define LEFT_MIDDY_CHORD_REPEAT_DECAY MIDDY_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_CHORD_REPEAT_DECAY
-    #define RIGHT_MIDDY_CHORD_REPEAT_DECAY MIDDY_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef INDEX_HOLDING_TYPE
-    #define INDEX_HOLDING_TYPE HOMEY_HOLDING_TYPE
-    #endif
-    #ifndef INDEX_CHORD_HOLDING_TYPE
-    #define INDEX_CHORD_HOLDING_TYPE CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_CHORD_HOLDING_TYPE
-    #define LEFT_INDEX_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_CHORD_HOLDING_TYPE
-    #define RIGHT_INDEX_CHORD_HOLDING_TYPE INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef INDEX_HOLDING_TIME
-    #define INDEX_HOLDING_TIME HOMEY_HOLDING_TIME
-    #endif
-    #ifndef INDEX_CHORD_HOLDING_TIME
-    #define INDEX_CHORD_HOLDING_TIME CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_CHORD_HOLDING_TIME
-    #define LEFT_INDEX_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_CHORD_HOLDING_TIME
-    #define RIGHT_INDEX_CHORD_HOLDING_TIME INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef INDEX_STREAK_DECAY
-    #define INDEX_STREAK_DECAY HOMEY_STREAK_DECAY
-    #endif
-    #ifndef INDEX_CHORD_STREAK_DECAY
-    #define INDEX_CHORD_STREAK_DECAY CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_CHORD_STREAK_DECAY
-    #define LEFT_INDEX_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_CHORD_STREAK_DECAY
-    #define RIGHT_INDEX_CHORD_STREAK_DECAY INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef INDEX_REPEAT_DECAY
-    #define INDEX_REPEAT_DECAY HOMEY_REPEAT_DECAY
-    #endif
-    #ifndef INDEX_CHORD_REPEAT_DECAY
-    #define INDEX_CHORD_REPEAT_DECAY CHORD_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_INDEX_CHORD_REPEAT_DECAY
-    #define LEFT_INDEX_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_CHORD_REPEAT_DECAY
-    #define RIGHT_INDEX_CHORD_REPEAT_DECAY INDEX_CHORD_REPEAT_DECAY
-    #endif
-    #ifndef LEFT_PINKY_HOLDING_TYPE
-    #define LEFT_PINKY_HOLDING_TYPE INDEX_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_HOLDING_TIME
-    #define LEFT_PINKY_HOLDING_TIME INDEX_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_STREAK_DECAY
-    #define LEFT_PINKY_STREAK_DECAY INDEX_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_REPEAT_DECAY
-    #define LEFT_PINKY_REPEAT_DECAY INDEX_REPEAT_DECAY
-    #endif
     left_pinky: homey_left_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_PINKY_HOLDING_TYPE;
@@ -1061,18 +835,6 @@ behaviors {
             ;
     };
     #define LeftPinky(key) left_pinky LEFT_PINKY_MOD key
-    #ifndef RIGHT_PINKY_HOLDING_TYPE
-    #define RIGHT_PINKY_HOLDING_TYPE PINKY_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_HOLDING_TIME
-    #define RIGHT_PINKY_HOLDING_TIME PINKY_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_STREAK_DECAY
-    #define RIGHT_PINKY_STREAK_DECAY PINKY_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_REPEAT_DECAY
-    #define RIGHT_PINKY_REPEAT_DECAY PINKY_REPEAT_DECAY
-    #endif
     right_pinky: homey_right_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_PINKY_HOLDING_TYPE;
@@ -1122,18 +884,6 @@ behaviors {
             ;
     };
     #define RightPinky(key) right_pinky RIGHT_PINKY_MOD key
-    #ifndef LEFT_RING1_HOLDING_TYPE
-    #define LEFT_RING1_HOLDING_TYPE RING1_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_HOLDING_TIME
-    #define LEFT_RING1_HOLDING_TIME RING1_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_STREAK_DECAY
-    #define LEFT_RING1_STREAK_DECAY RING1_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_REPEAT_DECAY
-    #define LEFT_RING1_REPEAT_DECAY RING1_REPEAT_DECAY
-    #endif
     left_ring1: homey_left_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING1_HOLDING_TYPE;
@@ -1183,18 +933,6 @@ behaviors {
             ;
     };
     #define LeftRing1(key) left_ring1 LEFT_RING1_MOD key
-    #ifndef RIGHT_RING1_HOLDING_TYPE
-    #define RIGHT_RING1_HOLDING_TYPE RING1_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_HOLDING_TIME
-    #define RIGHT_RING1_HOLDING_TIME RING1_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_STREAK_DECAY
-    #define RIGHT_RING1_STREAK_DECAY RING1_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_REPEAT_DECAY
-    #define RIGHT_RING1_REPEAT_DECAY RING1_REPEAT_DECAY
-    #endif
     right_ring1: homey_right_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING1_HOLDING_TYPE;
@@ -1244,18 +982,6 @@ behaviors {
             ;
     };
     #define RightRing1(key) right_ring1 RIGHT_RING1_MOD key
-    #ifndef LEFT_RING2_HOLDING_TYPE
-    #define LEFT_RING2_HOLDING_TYPE RING2_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_HOLDING_TIME
-    #define LEFT_RING2_HOLDING_TIME RING2_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_STREAK_DECAY
-    #define LEFT_RING2_STREAK_DECAY RING2_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_REPEAT_DECAY
-    #define LEFT_RING2_REPEAT_DECAY RING2_REPEAT_DECAY
-    #endif
     left_ring2: homey_left_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING2_HOLDING_TYPE;
@@ -1305,18 +1031,6 @@ behaviors {
             ;
     };
     #define LeftRing2(key) left_ring2 LEFT_RING2_MOD key
-    #ifndef RIGHT_RING2_HOLDING_TYPE
-    #define RIGHT_RING2_HOLDING_TYPE RING2_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_HOLDING_TIME
-    #define RIGHT_RING2_HOLDING_TIME RING2_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_STREAK_DECAY
-    #define RIGHT_RING2_STREAK_DECAY RING2_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_REPEAT_DECAY
-    #define RIGHT_RING2_REPEAT_DECAY RING2_REPEAT_DECAY
-    #endif
     right_ring2: homey_right_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING2_HOLDING_TYPE;
@@ -1366,18 +1080,6 @@ behaviors {
             ;
     };
     #define RightRing2(key) right_ring2 RIGHT_RING2_MOD key
-    #ifndef LEFT_MIDDY_HOLDING_TYPE
-    #define LEFT_MIDDY_HOLDING_TYPE MIDDY_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_HOLDING_TIME
-    #define LEFT_MIDDY_HOLDING_TIME MIDDY_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_STREAK_DECAY
-    #define LEFT_MIDDY_STREAK_DECAY MIDDY_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_REPEAT_DECAY
-    #define LEFT_MIDDY_REPEAT_DECAY MIDDY_REPEAT_DECAY
-    #endif
     left_middy: homey_left_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_MIDDY_HOLDING_TYPE;
@@ -1427,18 +1129,6 @@ behaviors {
             ;
     };
     #define LeftMiddy(key) left_middy LEFT_MIDDY_MOD key
-    #ifndef RIGHT_MIDDY_HOLDING_TYPE
-    #define RIGHT_MIDDY_HOLDING_TYPE MIDDY_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_HOLDING_TIME
-    #define RIGHT_MIDDY_HOLDING_TIME MIDDY_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_STREAK_DECAY
-    #define RIGHT_MIDDY_STREAK_DECAY MIDDY_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_REPEAT_DECAY
-    #define RIGHT_MIDDY_REPEAT_DECAY MIDDY_REPEAT_DECAY
-    #endif
     right_middy: homey_right_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_MIDDY_HOLDING_TYPE;
@@ -1488,18 +1178,6 @@ behaviors {
             ;
     };
     #define RightMiddy(key) right_middy RIGHT_MIDDY_MOD key
-    #ifndef LEFT_INDEX_HOLDING_TYPE
-    #define LEFT_INDEX_HOLDING_TYPE INDEX_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_HOLDING_TIME
-    #define LEFT_INDEX_HOLDING_TIME INDEX_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_STREAK_DECAY
-    #define LEFT_INDEX_STREAK_DECAY INDEX_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_REPEAT_DECAY
-    #define LEFT_INDEX_REPEAT_DECAY INDEX_REPEAT_DECAY
-    #endif
     left_index: homey_left_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_INDEX_HOLDING_TYPE;
@@ -1549,18 +1227,6 @@ behaviors {
             ;
     };
     #define LeftIndex(key) left_index LEFT_INDEX_MOD key
-    #ifndef RIGHT_INDEX_HOLDING_TYPE
-    #define RIGHT_INDEX_HOLDING_TYPE INDEX_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_HOLDING_TIME
-    #define RIGHT_INDEX_HOLDING_TIME INDEX_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_STREAK_DECAY
-    #define RIGHT_INDEX_STREAK_DECAY INDEX_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_REPEAT_DECAY
-    #define RIGHT_INDEX_REPEAT_DECAY INDEX_REPEAT_DECAY
-    #endif
     right_index: homey_right_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_INDEX_HOLDING_TYPE;
@@ -1610,18 +1276,6 @@ behaviors {
             ;
     };
     #define RightIndex(key) right_index RIGHT_INDEX_MOD key
-    #ifndef LEFT_RING1_PINKY_HOLDING_TYPE
-    #define LEFT_RING1_PINKY_HOLDING_TYPE LEFT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_PINKY_HOLDING_TIME
-    #define LEFT_RING1_PINKY_HOLDING_TIME LEFT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_PINKY_STREAK_DECAY
-    #define LEFT_RING1_PINKY_STREAK_DECAY LEFT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_PINKY_REPEAT_DECAY
-    #define LEFT_RING1_PINKY_REPEAT_DECAY LEFT_RING1_CHORD_REPEAT_DECAY
-    #endif
     left_ring1_pinky: homey_left_ring1_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING1_HOLDING_TYPE;
@@ -1640,18 +1294,6 @@ behaviors {
         #endif
     };
     #define LeftRing1Pinky left_ring1_pinky LEFT_PINKY_MOD LEFT_PINKY_KEY
-    #ifndef LEFT_RING2_PINKY_HOLDING_TYPE
-    #define LEFT_RING2_PINKY_HOLDING_TYPE LEFT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_PINKY_HOLDING_TIME
-    #define LEFT_RING2_PINKY_HOLDING_TIME LEFT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_PINKY_STREAK_DECAY
-    #define LEFT_RING2_PINKY_STREAK_DECAY LEFT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_PINKY_REPEAT_DECAY
-    #define LEFT_RING2_PINKY_REPEAT_DECAY LEFT_RING2_CHORD_REPEAT_DECAY
-    #endif
     left_ring2_pinky: homey_left_ring2_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING2_HOLDING_TYPE;
@@ -1670,18 +1312,6 @@ behaviors {
         #endif
     };
     #define LeftRing2Pinky left_ring2_pinky LEFT_PINKY_MOD LEFT_PINKY_KEY
-    #ifndef LEFT_MIDDY_PINKY_HOLDING_TYPE
-    #define LEFT_MIDDY_PINKY_HOLDING_TYPE LEFT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_PINKY_HOLDING_TIME
-    #define LEFT_MIDDY_PINKY_HOLDING_TIME LEFT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_PINKY_STREAK_DECAY
-    #define LEFT_MIDDY_PINKY_STREAK_DECAY LEFT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_PINKY_REPEAT_DECAY
-    #define LEFT_MIDDY_PINKY_REPEAT_DECAY LEFT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     left_middy_pinky: homey_left_middy_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_MIDDY_HOLDING_TYPE;
@@ -1700,18 +1330,6 @@ behaviors {
         #endif
     };
     #define LeftMiddyPinky left_middy_pinky LEFT_PINKY_MOD LEFT_PINKY_KEY
-    #ifndef LEFT_INDEX_PINKY_HOLDING_TYPE
-    #define LEFT_INDEX_PINKY_HOLDING_TYPE LEFT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_PINKY_HOLDING_TIME
-    #define LEFT_INDEX_PINKY_HOLDING_TIME LEFT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_PINKY_STREAK_DECAY
-    #define LEFT_INDEX_PINKY_STREAK_DECAY LEFT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_PINKY_REPEAT_DECAY
-    #define LEFT_INDEX_PINKY_REPEAT_DECAY LEFT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     left_index_pinky: homey_left_index_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_INDEX_HOLDING_TYPE;
@@ -1730,18 +1348,6 @@ behaviors {
         #endif
     };
     #define LeftIndexPinky left_index_pinky LEFT_PINKY_MOD LEFT_PINKY_KEY
-    #ifndef RIGHT_RING1_PINKY_HOLDING_TYPE
-    #define RIGHT_RING1_PINKY_HOLDING_TYPE RIGHT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_PINKY_HOLDING_TIME
-    #define RIGHT_RING1_PINKY_HOLDING_TIME RIGHT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_PINKY_STREAK_DECAY
-    #define RIGHT_RING1_PINKY_STREAK_DECAY RIGHT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_PINKY_REPEAT_DECAY
-    #define RIGHT_RING1_PINKY_REPEAT_DECAY RIGHT_RING1_CHORD_REPEAT_DECAY
-    #endif
     right_ring1_pinky: homey_right_ring1_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING1_HOLDING_TYPE;
@@ -1760,18 +1366,6 @@ behaviors {
         #endif
     };
     #define RightRing1Pinky right_ring1_pinky RIGHT_PINKY_MOD RIGHT_PINKY_KEY
-    #ifndef RIGHT_RING2_PINKY_HOLDING_TYPE
-    #define RIGHT_RING2_PINKY_HOLDING_TYPE RIGHT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_PINKY_HOLDING_TIME
-    #define RIGHT_RING2_PINKY_HOLDING_TIME RIGHT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_PINKY_STREAK_DECAY
-    #define RIGHT_RING2_PINKY_STREAK_DECAY RIGHT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_PINKY_REPEAT_DECAY
-    #define RIGHT_RING2_PINKY_REPEAT_DECAY RIGHT_RING2_CHORD_REPEAT_DECAY
-    #endif
     right_ring2_pinky: homey_right_ring2_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING2_HOLDING_TYPE;
@@ -1790,18 +1384,6 @@ behaviors {
         #endif
     };
     #define RightRing2Pinky right_ring2_pinky RIGHT_PINKY_MOD RIGHT_PINKY_KEY
-    #ifndef RIGHT_MIDDY_PINKY_HOLDING_TYPE
-    #define RIGHT_MIDDY_PINKY_HOLDING_TYPE RIGHT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_PINKY_HOLDING_TIME
-    #define RIGHT_MIDDY_PINKY_HOLDING_TIME RIGHT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_PINKY_STREAK_DECAY
-    #define RIGHT_MIDDY_PINKY_STREAK_DECAY RIGHT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_PINKY_REPEAT_DECAY
-    #define RIGHT_MIDDY_PINKY_REPEAT_DECAY RIGHT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     right_middy_pinky: homey_right_middy_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_MIDDY_HOLDING_TYPE;
@@ -1820,18 +1402,6 @@ behaviors {
         #endif
     };
     #define RightMiddyPinky right_middy_pinky RIGHT_PINKY_MOD RIGHT_PINKY_KEY
-    #ifndef RIGHT_INDEX_PINKY_HOLDING_TYPE
-    #define RIGHT_INDEX_PINKY_HOLDING_TYPE RIGHT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_PINKY_HOLDING_TIME
-    #define RIGHT_INDEX_PINKY_HOLDING_TIME RIGHT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_PINKY_STREAK_DECAY
-    #define RIGHT_INDEX_PINKY_STREAK_DECAY RIGHT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_PINKY_REPEAT_DECAY
-    #define RIGHT_INDEX_PINKY_REPEAT_DECAY RIGHT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     right_index_pinky: homey_right_index_pinky {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_INDEX_HOLDING_TYPE;
@@ -1850,18 +1420,6 @@ behaviors {
         #endif
     };
     #define RightIndexPinky right_index_pinky RIGHT_PINKY_MOD RIGHT_PINKY_KEY
-    #ifndef LEFT_PINKY_RING1_HOLDING_TYPE
-    #define LEFT_PINKY_RING1_HOLDING_TYPE LEFT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_RING1_HOLDING_TIME
-    #define LEFT_PINKY_RING1_HOLDING_TIME LEFT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_RING1_STREAK_DECAY
-    #define LEFT_PINKY_RING1_STREAK_DECAY LEFT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_RING1_REPEAT_DECAY
-    #define LEFT_PINKY_RING1_REPEAT_DECAY LEFT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     left_pinky_ring1: homey_left_pinky_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_PINKY_HOLDING_TYPE;
@@ -1880,18 +1438,6 @@ behaviors {
         #endif
     };
     #define LeftPinkyRing1 left_pinky_ring1 LEFT_RING1_MOD LEFT_RING1_KEY
-    #ifndef LEFT_RING2_RING1_HOLDING_TYPE
-    #define LEFT_RING2_RING1_HOLDING_TYPE LEFT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_RING1_HOLDING_TIME
-    #define LEFT_RING2_RING1_HOLDING_TIME LEFT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_RING1_STREAK_DECAY
-    #define LEFT_RING2_RING1_STREAK_DECAY LEFT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_RING1_REPEAT_DECAY
-    #define LEFT_RING2_RING1_REPEAT_DECAY LEFT_RING2_CHORD_REPEAT_DECAY
-    #endif
     left_ring2_ring1: homey_left_ring2_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING2_HOLDING_TYPE;
@@ -1910,18 +1456,6 @@ behaviors {
         #endif
     };
     #define LeftRing2Ring1 left_ring2_ring1 LEFT_RING1_MOD LEFT_RING1_KEY
-    #ifndef LEFT_MIDDY_RING1_HOLDING_TYPE
-    #define LEFT_MIDDY_RING1_HOLDING_TYPE LEFT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_RING1_HOLDING_TIME
-    #define LEFT_MIDDY_RING1_HOLDING_TIME LEFT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_RING1_STREAK_DECAY
-    #define LEFT_MIDDY_RING1_STREAK_DECAY LEFT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_RING1_REPEAT_DECAY
-    #define LEFT_MIDDY_RING1_REPEAT_DECAY LEFT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     left_middy_ring1: homey_left_middy_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_MIDDY_HOLDING_TYPE;
@@ -1940,18 +1474,6 @@ behaviors {
         #endif
     };
     #define LeftMiddyRing1 left_middy_ring1 LEFT_RING1_MOD LEFT_RING1_KEY
-    #ifndef LEFT_INDEX_RING1_HOLDING_TYPE
-    #define LEFT_INDEX_RING1_HOLDING_TYPE LEFT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_RING1_HOLDING_TIME
-    #define LEFT_INDEX_RING1_HOLDING_TIME LEFT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_RING1_STREAK_DECAY
-    #define LEFT_INDEX_RING1_STREAK_DECAY LEFT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_RING1_REPEAT_DECAY
-    #define LEFT_INDEX_RING1_REPEAT_DECAY LEFT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     left_index_ring1: homey_left_index_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_INDEX_HOLDING_TYPE;
@@ -1970,18 +1492,6 @@ behaviors {
         #endif
     };
     #define LeftIndexRing1 left_index_ring1 LEFT_RING1_MOD LEFT_RING1_KEY
-    #ifndef RIGHT_PINKY_RING1_HOLDING_TYPE
-    #define RIGHT_PINKY_RING1_HOLDING_TYPE RIGHT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_RING1_HOLDING_TIME
-    #define RIGHT_PINKY_RING1_HOLDING_TIME RIGHT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_RING1_STREAK_DECAY
-    #define RIGHT_PINKY_RING1_STREAK_DECAY RIGHT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_RING1_REPEAT_DECAY
-    #define RIGHT_PINKY_RING1_REPEAT_DECAY RIGHT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     right_pinky_ring1: homey_right_pinky_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_PINKY_HOLDING_TYPE;
@@ -2000,18 +1510,6 @@ behaviors {
         #endif
     };
     #define RightPinkyRing1 right_pinky_ring1 RIGHT_RING1_MOD RIGHT_RING1_KEY
-    #ifndef RIGHT_RING2_RING1_HOLDING_TYPE
-    #define RIGHT_RING2_RING1_HOLDING_TYPE RIGHT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_RING1_HOLDING_TIME
-    #define RIGHT_RING2_RING1_HOLDING_TIME RIGHT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_RING1_STREAK_DECAY
-    #define RIGHT_RING2_RING1_STREAK_DECAY RIGHT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_RING1_REPEAT_DECAY
-    #define RIGHT_RING2_RING1_REPEAT_DECAY RIGHT_RING2_CHORD_REPEAT_DECAY
-    #endif
     right_ring2_ring1: homey_right_ring2_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING2_HOLDING_TYPE;
@@ -2030,18 +1528,6 @@ behaviors {
         #endif
     };
     #define RightRing2Ring1 right_ring2_ring1 RIGHT_RING1_MOD RIGHT_RING1_KEY
-    #ifndef RIGHT_MIDDY_RING1_HOLDING_TYPE
-    #define RIGHT_MIDDY_RING1_HOLDING_TYPE RIGHT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_RING1_HOLDING_TIME
-    #define RIGHT_MIDDY_RING1_HOLDING_TIME RIGHT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_RING1_STREAK_DECAY
-    #define RIGHT_MIDDY_RING1_STREAK_DECAY RIGHT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_RING1_REPEAT_DECAY
-    #define RIGHT_MIDDY_RING1_REPEAT_DECAY RIGHT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     right_middy_ring1: homey_right_middy_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_MIDDY_HOLDING_TYPE;
@@ -2060,18 +1546,6 @@ behaviors {
         #endif
     };
     #define RightMiddyRing1 right_middy_ring1 RIGHT_RING1_MOD RIGHT_RING1_KEY
-    #ifndef RIGHT_INDEX_RING1_HOLDING_TYPE
-    #define RIGHT_INDEX_RING1_HOLDING_TYPE RIGHT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_RING1_HOLDING_TIME
-    #define RIGHT_INDEX_RING1_HOLDING_TIME RIGHT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_RING1_STREAK_DECAY
-    #define RIGHT_INDEX_RING1_STREAK_DECAY RIGHT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_RING1_REPEAT_DECAY
-    #define RIGHT_INDEX_RING1_REPEAT_DECAY RIGHT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     right_index_ring1: homey_right_index_ring1 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_INDEX_HOLDING_TYPE;
@@ -2090,18 +1564,6 @@ behaviors {
         #endif
     };
     #define RightIndexRing1 right_index_ring1 RIGHT_RING1_MOD RIGHT_RING1_KEY
-    #ifndef LEFT_PINKY_RING2_HOLDING_TYPE
-    #define LEFT_PINKY_RING2_HOLDING_TYPE LEFT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_RING2_HOLDING_TIME
-    #define LEFT_PINKY_RING2_HOLDING_TIME LEFT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_RING2_STREAK_DECAY
-    #define LEFT_PINKY_RING2_STREAK_DECAY LEFT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_RING2_REPEAT_DECAY
-    #define LEFT_PINKY_RING2_REPEAT_DECAY LEFT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     left_pinky_ring2: homey_left_pinky_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_PINKY_HOLDING_TYPE;
@@ -2120,18 +1582,6 @@ behaviors {
         #endif
     };
     #define LeftPinkyRing2 left_pinky_ring2 LEFT_RING2_MOD LEFT_RING2_KEY
-    #ifndef LEFT_RING1_RING2_HOLDING_TYPE
-    #define LEFT_RING1_RING2_HOLDING_TYPE LEFT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_RING2_HOLDING_TIME
-    #define LEFT_RING1_RING2_HOLDING_TIME LEFT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_RING2_STREAK_DECAY
-    #define LEFT_RING1_RING2_STREAK_DECAY LEFT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_RING2_REPEAT_DECAY
-    #define LEFT_RING1_RING2_REPEAT_DECAY LEFT_RING1_CHORD_REPEAT_DECAY
-    #endif
     left_ring1_ring2: homey_left_ring1_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING1_HOLDING_TYPE;
@@ -2150,18 +1600,6 @@ behaviors {
         #endif
     };
     #define LeftRing1Ring2 left_ring1_ring2 LEFT_RING2_MOD LEFT_RING2_KEY
-    #ifndef LEFT_MIDDY_RING2_HOLDING_TYPE
-    #define LEFT_MIDDY_RING2_HOLDING_TYPE LEFT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_RING2_HOLDING_TIME
-    #define LEFT_MIDDY_RING2_HOLDING_TIME LEFT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_RING2_STREAK_DECAY
-    #define LEFT_MIDDY_RING2_STREAK_DECAY LEFT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_RING2_REPEAT_DECAY
-    #define LEFT_MIDDY_RING2_REPEAT_DECAY LEFT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     left_middy_ring2: homey_left_middy_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_MIDDY_HOLDING_TYPE;
@@ -2180,18 +1618,6 @@ behaviors {
         #endif
     };
     #define LeftMiddyRing2 left_middy_ring2 LEFT_RING2_MOD LEFT_RING2_KEY
-    #ifndef LEFT_INDEX_RING2_HOLDING_TYPE
-    #define LEFT_INDEX_RING2_HOLDING_TYPE LEFT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_RING2_HOLDING_TIME
-    #define LEFT_INDEX_RING2_HOLDING_TIME LEFT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_RING2_STREAK_DECAY
-    #define LEFT_INDEX_RING2_STREAK_DECAY LEFT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_RING2_REPEAT_DECAY
-    #define LEFT_INDEX_RING2_REPEAT_DECAY LEFT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     left_index_ring2: homey_left_index_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_INDEX_HOLDING_TYPE;
@@ -2210,18 +1636,6 @@ behaviors {
         #endif
     };
     #define LeftIndexRing2 left_index_ring2 LEFT_RING2_MOD LEFT_RING2_KEY
-    #ifndef RIGHT_PINKY_RING2_HOLDING_TYPE
-    #define RIGHT_PINKY_RING2_HOLDING_TYPE RIGHT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_RING2_HOLDING_TIME
-    #define RIGHT_PINKY_RING2_HOLDING_TIME RIGHT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_RING2_STREAK_DECAY
-    #define RIGHT_PINKY_RING2_STREAK_DECAY RIGHT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_RING2_REPEAT_DECAY
-    #define RIGHT_PINKY_RING2_REPEAT_DECAY RIGHT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     right_pinky_ring2: homey_right_pinky_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_PINKY_HOLDING_TYPE;
@@ -2240,18 +1654,6 @@ behaviors {
         #endif
     };
     #define RightPinkyRing2 right_pinky_ring2 RIGHT_RING2_MOD RIGHT_RING2_KEY
-    #ifndef RIGHT_RING1_RING2_HOLDING_TYPE
-    #define RIGHT_RING1_RING2_HOLDING_TYPE RIGHT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_RING2_HOLDING_TIME
-    #define RIGHT_RING1_RING2_HOLDING_TIME RIGHT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_RING2_STREAK_DECAY
-    #define RIGHT_RING1_RING2_STREAK_DECAY RIGHT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_RING2_REPEAT_DECAY
-    #define RIGHT_RING1_RING2_REPEAT_DECAY RIGHT_RING1_CHORD_REPEAT_DECAY
-    #endif
     right_ring1_ring2: homey_right_ring1_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING1_HOLDING_TYPE;
@@ -2270,18 +1672,6 @@ behaviors {
         #endif
     };
     #define RightRing1Ring2 right_ring1_ring2 RIGHT_RING2_MOD RIGHT_RING2_KEY
-    #ifndef RIGHT_MIDDY_RING2_HOLDING_TYPE
-    #define RIGHT_MIDDY_RING2_HOLDING_TYPE RIGHT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_RING2_HOLDING_TIME
-    #define RIGHT_MIDDY_RING2_HOLDING_TIME RIGHT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_RING2_STREAK_DECAY
-    #define RIGHT_MIDDY_RING2_STREAK_DECAY RIGHT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_RING2_REPEAT_DECAY
-    #define RIGHT_MIDDY_RING2_REPEAT_DECAY RIGHT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     right_middy_ring2: homey_right_middy_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_MIDDY_HOLDING_TYPE;
@@ -2300,18 +1690,6 @@ behaviors {
         #endif
     };
     #define RightMiddyRing2 right_middy_ring2 RIGHT_RING2_MOD RIGHT_RING2_KEY
-    #ifndef RIGHT_INDEX_RING2_HOLDING_TYPE
-    #define RIGHT_INDEX_RING2_HOLDING_TYPE RIGHT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_RING2_HOLDING_TIME
-    #define RIGHT_INDEX_RING2_HOLDING_TIME RIGHT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_RING2_STREAK_DECAY
-    #define RIGHT_INDEX_RING2_STREAK_DECAY RIGHT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_RING2_REPEAT_DECAY
-    #define RIGHT_INDEX_RING2_REPEAT_DECAY RIGHT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     right_index_ring2: homey_right_index_ring2 {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_INDEX_HOLDING_TYPE;
@@ -2330,18 +1708,6 @@ behaviors {
         #endif
     };
     #define RightIndexRing2 right_index_ring2 RIGHT_RING2_MOD RIGHT_RING2_KEY
-    #ifndef LEFT_PINKY_MIDDY_HOLDING_TYPE
-    #define LEFT_PINKY_MIDDY_HOLDING_TYPE LEFT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_MIDDY_HOLDING_TIME
-    #define LEFT_PINKY_MIDDY_HOLDING_TIME LEFT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_MIDDY_STREAK_DECAY
-    #define LEFT_PINKY_MIDDY_STREAK_DECAY LEFT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_MIDDY_REPEAT_DECAY
-    #define LEFT_PINKY_MIDDY_REPEAT_DECAY LEFT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     left_pinky_middy: homey_left_pinky_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_PINKY_HOLDING_TYPE;
@@ -2360,18 +1726,6 @@ behaviors {
         #endif
     };
     #define LeftPinkyMiddy left_pinky_middy LEFT_MIDDY_MOD LEFT_MIDDY_KEY
-    #ifndef LEFT_RING1_MIDDY_HOLDING_TYPE
-    #define LEFT_RING1_MIDDY_HOLDING_TYPE LEFT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_MIDDY_HOLDING_TIME
-    #define LEFT_RING1_MIDDY_HOLDING_TIME LEFT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_MIDDY_STREAK_DECAY
-    #define LEFT_RING1_MIDDY_STREAK_DECAY LEFT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_MIDDY_REPEAT_DECAY
-    #define LEFT_RING1_MIDDY_REPEAT_DECAY LEFT_RING1_CHORD_REPEAT_DECAY
-    #endif
     left_ring1_middy: homey_left_ring1_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING1_HOLDING_TYPE;
@@ -2390,18 +1744,6 @@ behaviors {
         #endif
     };
     #define LeftRing1Middy left_ring1_middy LEFT_MIDDY_MOD LEFT_MIDDY_KEY
-    #ifndef LEFT_RING2_MIDDY_HOLDING_TYPE
-    #define LEFT_RING2_MIDDY_HOLDING_TYPE LEFT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_MIDDY_HOLDING_TIME
-    #define LEFT_RING2_MIDDY_HOLDING_TIME LEFT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_MIDDY_STREAK_DECAY
-    #define LEFT_RING2_MIDDY_STREAK_DECAY LEFT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_MIDDY_REPEAT_DECAY
-    #define LEFT_RING2_MIDDY_REPEAT_DECAY LEFT_RING2_CHORD_REPEAT_DECAY
-    #endif
     left_ring2_middy: homey_left_ring2_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING2_HOLDING_TYPE;
@@ -2420,18 +1762,6 @@ behaviors {
         #endif
     };
     #define LeftRing2Middy left_ring2_middy LEFT_MIDDY_MOD LEFT_MIDDY_KEY
-    #ifndef LEFT_INDEX_MIDDY_HOLDING_TYPE
-    #define LEFT_INDEX_MIDDY_HOLDING_TYPE LEFT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_INDEX_MIDDY_HOLDING_TIME
-    #define LEFT_INDEX_MIDDY_HOLDING_TIME LEFT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_INDEX_MIDDY_STREAK_DECAY
-    #define LEFT_INDEX_MIDDY_STREAK_DECAY LEFT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_INDEX_MIDDY_REPEAT_DECAY
-    #define LEFT_INDEX_MIDDY_REPEAT_DECAY LEFT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     left_index_middy: homey_left_index_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_INDEX_HOLDING_TYPE;
@@ -2450,18 +1780,6 @@ behaviors {
         #endif
     };
     #define LeftIndexMiddy left_index_middy LEFT_MIDDY_MOD LEFT_MIDDY_KEY
-    #ifndef RIGHT_PINKY_MIDDY_HOLDING_TYPE
-    #define RIGHT_PINKY_MIDDY_HOLDING_TYPE RIGHT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_MIDDY_HOLDING_TIME
-    #define RIGHT_PINKY_MIDDY_HOLDING_TIME RIGHT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_MIDDY_STREAK_DECAY
-    #define RIGHT_PINKY_MIDDY_STREAK_DECAY RIGHT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_MIDDY_REPEAT_DECAY
-    #define RIGHT_PINKY_MIDDY_REPEAT_DECAY RIGHT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     right_pinky_middy: homey_right_pinky_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_PINKY_HOLDING_TYPE;
@@ -2480,18 +1798,6 @@ behaviors {
         #endif
     };
     #define RightPinkyMiddy right_pinky_middy RIGHT_MIDDY_MOD RIGHT_MIDDY_KEY
-    #ifndef RIGHT_RING1_MIDDY_HOLDING_TYPE
-    #define RIGHT_RING1_MIDDY_HOLDING_TYPE RIGHT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_MIDDY_HOLDING_TIME
-    #define RIGHT_RING1_MIDDY_HOLDING_TIME RIGHT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_MIDDY_STREAK_DECAY
-    #define RIGHT_RING1_MIDDY_STREAK_DECAY RIGHT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_MIDDY_REPEAT_DECAY
-    #define RIGHT_RING1_MIDDY_REPEAT_DECAY RIGHT_RING1_CHORD_REPEAT_DECAY
-    #endif
     right_ring1_middy: homey_right_ring1_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING1_HOLDING_TYPE;
@@ -2510,18 +1816,6 @@ behaviors {
         #endif
     };
     #define RightRing1Middy right_ring1_middy RIGHT_MIDDY_MOD RIGHT_MIDDY_KEY
-    #ifndef RIGHT_RING2_MIDDY_HOLDING_TYPE
-    #define RIGHT_RING2_MIDDY_HOLDING_TYPE RIGHT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_MIDDY_HOLDING_TIME
-    #define RIGHT_RING2_MIDDY_HOLDING_TIME RIGHT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_MIDDY_STREAK_DECAY
-    #define RIGHT_RING2_MIDDY_STREAK_DECAY RIGHT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_MIDDY_REPEAT_DECAY
-    #define RIGHT_RING2_MIDDY_REPEAT_DECAY RIGHT_RING2_CHORD_REPEAT_DECAY
-    #endif
     right_ring2_middy: homey_right_ring2_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING2_HOLDING_TYPE;
@@ -2540,18 +1834,6 @@ behaviors {
         #endif
     };
     #define RightRing2Middy right_ring2_middy RIGHT_MIDDY_MOD RIGHT_MIDDY_KEY
-    #ifndef RIGHT_INDEX_MIDDY_HOLDING_TYPE
-    #define RIGHT_INDEX_MIDDY_HOLDING_TYPE RIGHT_INDEX_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_INDEX_MIDDY_HOLDING_TIME
-    #define RIGHT_INDEX_MIDDY_HOLDING_TIME RIGHT_INDEX_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_INDEX_MIDDY_STREAK_DECAY
-    #define RIGHT_INDEX_MIDDY_STREAK_DECAY RIGHT_INDEX_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_INDEX_MIDDY_REPEAT_DECAY
-    #define RIGHT_INDEX_MIDDY_REPEAT_DECAY RIGHT_INDEX_CHORD_REPEAT_DECAY
-    #endif
     right_index_middy: homey_right_index_middy {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_INDEX_HOLDING_TYPE;
@@ -2570,18 +1852,6 @@ behaviors {
         #endif
     };
     #define RightIndexMiddy right_index_middy RIGHT_MIDDY_MOD RIGHT_MIDDY_KEY
-    #ifndef LEFT_PINKY_INDEX_HOLDING_TYPE
-    #define LEFT_PINKY_INDEX_HOLDING_TYPE LEFT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_PINKY_INDEX_HOLDING_TIME
-    #define LEFT_PINKY_INDEX_HOLDING_TIME LEFT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_PINKY_INDEX_STREAK_DECAY
-    #define LEFT_PINKY_INDEX_STREAK_DECAY LEFT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_PINKY_INDEX_REPEAT_DECAY
-    #define LEFT_PINKY_INDEX_REPEAT_DECAY LEFT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     left_pinky_index: homey_left_pinky_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_PINKY_HOLDING_TYPE;
@@ -2600,18 +1870,6 @@ behaviors {
         #endif
     };
     #define LeftPinkyIndex left_pinky_index LEFT_INDEX_MOD LEFT_INDEX_KEY
-    #ifndef LEFT_RING1_INDEX_HOLDING_TYPE
-    #define LEFT_RING1_INDEX_HOLDING_TYPE LEFT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING1_INDEX_HOLDING_TIME
-    #define LEFT_RING1_INDEX_HOLDING_TIME LEFT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING1_INDEX_STREAK_DECAY
-    #define LEFT_RING1_INDEX_STREAK_DECAY LEFT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING1_INDEX_REPEAT_DECAY
-    #define LEFT_RING1_INDEX_REPEAT_DECAY LEFT_RING1_CHORD_REPEAT_DECAY
-    #endif
     left_ring1_index: homey_left_ring1_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING1_HOLDING_TYPE;
@@ -2630,18 +1888,6 @@ behaviors {
         #endif
     };
     #define LeftRing1Index left_ring1_index LEFT_INDEX_MOD LEFT_INDEX_KEY
-    #ifndef LEFT_RING2_INDEX_HOLDING_TYPE
-    #define LEFT_RING2_INDEX_HOLDING_TYPE LEFT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_RING2_INDEX_HOLDING_TIME
-    #define LEFT_RING2_INDEX_HOLDING_TIME LEFT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_RING2_INDEX_STREAK_DECAY
-    #define LEFT_RING2_INDEX_STREAK_DECAY LEFT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_RING2_INDEX_REPEAT_DECAY
-    #define LEFT_RING2_INDEX_REPEAT_DECAY LEFT_RING2_CHORD_REPEAT_DECAY
-    #endif
     left_ring2_index: homey_left_ring2_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_RING2_HOLDING_TYPE;
@@ -2660,18 +1906,6 @@ behaviors {
         #endif
     };
     #define LeftRing2Index left_ring2_index LEFT_INDEX_MOD LEFT_INDEX_KEY
-    #ifndef LEFT_MIDDY_INDEX_HOLDING_TYPE
-    #define LEFT_MIDDY_INDEX_HOLDING_TYPE LEFT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef LEFT_MIDDY_INDEX_HOLDING_TIME
-    #define LEFT_MIDDY_INDEX_HOLDING_TIME LEFT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef LEFT_MIDDY_INDEX_STREAK_DECAY
-    #define LEFT_MIDDY_INDEX_STREAK_DECAY LEFT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef LEFT_MIDDY_INDEX_REPEAT_DECAY
-    #define LEFT_MIDDY_INDEX_REPEAT_DECAY LEFT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     left_middy_index: homey_left_middy_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = LEFT_MIDDY_HOLDING_TYPE;
@@ -2690,18 +1924,6 @@ behaviors {
         #endif
     };
     #define LeftMiddyIndex left_middy_index LEFT_INDEX_MOD LEFT_INDEX_KEY
-    #ifndef RIGHT_PINKY_INDEX_HOLDING_TYPE
-    #define RIGHT_PINKY_INDEX_HOLDING_TYPE RIGHT_PINKY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_PINKY_INDEX_HOLDING_TIME
-    #define RIGHT_PINKY_INDEX_HOLDING_TIME RIGHT_PINKY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_PINKY_INDEX_STREAK_DECAY
-    #define RIGHT_PINKY_INDEX_STREAK_DECAY RIGHT_PINKY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_PINKY_INDEX_REPEAT_DECAY
-    #define RIGHT_PINKY_INDEX_REPEAT_DECAY RIGHT_PINKY_CHORD_REPEAT_DECAY
-    #endif
     right_pinky_index: homey_right_pinky_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_PINKY_HOLDING_TYPE;
@@ -2720,18 +1942,6 @@ behaviors {
         #endif
     };
     #define RightPinkyIndex right_pinky_index RIGHT_INDEX_MOD RIGHT_INDEX_KEY
-    #ifndef RIGHT_RING1_INDEX_HOLDING_TYPE
-    #define RIGHT_RING1_INDEX_HOLDING_TYPE RIGHT_RING1_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING1_INDEX_HOLDING_TIME
-    #define RIGHT_RING1_INDEX_HOLDING_TIME RIGHT_RING1_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING1_INDEX_STREAK_DECAY
-    #define RIGHT_RING1_INDEX_STREAK_DECAY RIGHT_RING1_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING1_INDEX_REPEAT_DECAY
-    #define RIGHT_RING1_INDEX_REPEAT_DECAY RIGHT_RING1_CHORD_REPEAT_DECAY
-    #endif
     right_ring1_index: homey_right_ring1_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING1_HOLDING_TYPE;
@@ -2750,18 +1960,6 @@ behaviors {
         #endif
     };
     #define RightRing1Index right_ring1_index RIGHT_INDEX_MOD RIGHT_INDEX_KEY
-    #ifndef RIGHT_RING2_INDEX_HOLDING_TYPE
-    #define RIGHT_RING2_INDEX_HOLDING_TYPE RIGHT_RING2_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_RING2_INDEX_HOLDING_TIME
-    #define RIGHT_RING2_INDEX_HOLDING_TIME RIGHT_RING2_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_RING2_INDEX_STREAK_DECAY
-    #define RIGHT_RING2_INDEX_STREAK_DECAY RIGHT_RING2_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_RING2_INDEX_REPEAT_DECAY
-    #define RIGHT_RING2_INDEX_REPEAT_DECAY RIGHT_RING2_CHORD_REPEAT_DECAY
-    #endif
     right_ring2_index: homey_right_ring2_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_RING2_HOLDING_TYPE;
@@ -2780,18 +1978,6 @@ behaviors {
         #endif
     };
     #define RightRing2Index right_ring2_index RIGHT_INDEX_MOD RIGHT_INDEX_KEY
-    #ifndef RIGHT_MIDDY_INDEX_HOLDING_TYPE
-    #define RIGHT_MIDDY_INDEX_HOLDING_TYPE RIGHT_MIDDY_CHORD_HOLDING_TYPE
-    #endif
-    #ifndef RIGHT_MIDDY_INDEX_HOLDING_TIME
-    #define RIGHT_MIDDY_INDEX_HOLDING_TIME RIGHT_MIDDY_CHORD_HOLDING_TIME
-    #endif
-    #ifndef RIGHT_MIDDY_INDEX_STREAK_DECAY
-    #define RIGHT_MIDDY_INDEX_STREAK_DECAY RIGHT_MIDDY_CHORD_STREAK_DECAY
-    #endif
-    #ifndef RIGHT_MIDDY_INDEX_REPEAT_DECAY
-    #define RIGHT_MIDDY_INDEX_REPEAT_DECAY RIGHT_MIDDY_CHORD_REPEAT_DECAY
-    #endif
     right_middy_index: homey_right_middy_index {
         compatible = "zmk,behavior-hold-tap";
         flavor = RIGHT_MIDDY_HOLDING_TYPE;
@@ -2812,28 +1998,13 @@ behaviors {
     #define RightMiddyIndex right_middy_index RIGHT_INDEX_MOD RIGHT_INDEX_KEY
 
     //
-    // Key repetition access keys on the index fingers
-    //
-    plain: plain_typing_layer {
-        compatible = "zmk,behavior-hold-tap";
-        flavor = PLAIN_HOLDING_TYPE;
-        tapping-term-ms = <PLAIN_HOLDING_TIME>;
-        require-prior-idle-ms = <PLAIN_STREAK_DECAY>;
-        #binding-cells = <2>;
-        bindings = <&mo>, <&kp>;
-        retro-tap; // tap on standalone hold
-    };
-
-    //
-    // Thumb cluster hold-tap keys for Miryoku layers
+    // Thumb cluster hold-tap keys for space and lower layer and both layer
     //
     thumb: thumb_layer_access {
         compatible = "zmk,behavior-hold-tap";
         flavor = THUMB_HOLDING_TYPE;
         tapping-term-ms = <THUMB_HOLDING_TIME>;
-        #ifdef ENABLE_KEY_REPEAT
-        quick-tap-ms = <THUMB_REPEAT_DECAY>; // enable repeat
-        #endif
+        //quick-tap-ms = <THUMB_REPEAT_DECAY>; // disabled
         #binding-cells = <2>;
         bindings = <&mo>, <&kp>;
     };
@@ -2841,7 +2012,7 @@ behaviors {
     left_lower_mod: homey_left_lower_mod {
         compatible = "zmk,behavior-hold-tap";
         flavor = HOMEY_HOLDING_TYPE;
-        hold-trigger-key-positions = <RIGHT_HAND_KEYS>;
+        hold-trigger-key-positions = <RIGHT_HAND_KEYS RIGHT_THUMB_KEYS>;
         hold-trigger-on-release; // wait for other home row mods
         tapping-term-ms = <HOMEY_HOLDING_TIME>;
         #ifdef ENABLE_KEY_REPEAT
@@ -2855,7 +2026,7 @@ behaviors {
     right_lower_mod: homey_right_lower_mod {
         compatible = "zmk,behavior-hold-tap";
         flavor = HOMEY_HOLDING_TYPE;
-        hold-trigger-key-positions = <LEFT_HAND_KEYS>;
+        hold-trigger-key-positions = <LEFT_HAND_KEYS LEFT_THUMB_KEYS>;
         hold-trigger-on-release; // wait for other home row mods
         tapping-term-ms = <HOMEY_HOLDING_TIME>;
         #ifdef ENABLE_KEY_REPEAT
@@ -2865,32 +2036,6 @@ behaviors {
         #binding-cells = <2>;
         bindings = <&kp>, <&kp>;
     };
-
-    //////////////////////////////////////////////////////////////////////////
-    //
-    // Custom hold-taps
-    //
-    //////////////////////////////////////////////////////////////////////////
-
-    //
-    // CAPPY_HOLDING_TIME defines how long you need to hold (milliseconds)
-    // cappy to type CapsLock.  Shorter holds are taps that type CapsWord.
-    //
-    #ifndef CAPPY_HOLDING_TIME
-    #define CAPPY_HOLDING_TIME 200
-    #endif
-
-    //
-    // Tap = CapsWord; Hold = CapsLock
-    //
-    cappy: capsword_and_capslock {
-        compatible = "zmk,behavior-hold-tap";
-        flavor = "tap-preferred";
-        tapping-term-ms = <CAPPY_HOLDING_TIME>;
-        #binding-cells = <2>;
-        bindings = <&kp>, <&caps_word>;
-    };
-
 
     //////////////////////////////////////////////////////////////////////////
     //
@@ -2911,6 +2056,7 @@ behaviors {
         >;
     };
 };
+
 };
 
 /* Automatically generated macro definitions */
@@ -2935,133 +2081,122 @@ behaviors {
 
         layer_QWERTY {
             bindings = <
-               &kp F1          &kp F2          &kp F3          &kp F4          &kp F5                                                                                                                                                         &kp F6           &kp F7           &kp F8              &kp F9               &kp F10
-           &caps_word          &kp N1          &kp N2          &kp N3          &kp N4                 &kp N5                                                                                                                 &kp N6           &kp N7           &kp N8           &kp N9              &kp N0             &kp PSCRN
-              &kp TAB           &kp Q  &LeftRing2 (W)           &kp E           &kp R                  &kp T                                                                                                                  &kp Y            &kp U            &kp I  &RightRing2 (O)               &kp P               &kp TAB
-              &kp ESC  &LeftPinky (A)  &LeftRing1 (S)  &LeftMiddy (D)  &LeftIndex (F)  &plain LAYER_Typing G                                                                                                  &plain LAYER_Typing H  &RightIndex (J)  &RightMiddy (K)  &RightRing1 (L)  &RightPinky (SEMI)               &kp ESC
-            &kp LSHFT           &kp Z           &kp X           &kp C           &kp V                  &kp B                   &kp ESC  &kp LG(D)  &tog 16  &kp LS(LG(M))  &kp DEL                  &kp BSPC                  &kp N            &kp M        &kp COMMA          &kp DOT            &kp FSLH             &kp RSHFT
- &magic LAYER_Magic 0        &kp HOME         &kp END       &kp LC(C)       &kp LC(V)                         &thumb LAYER_lower SPACE   &kp LGUI  &kp F11        &kp F12  &kp RET  &thumb LAYER_lower SPACE                                &kp LEFT         &kp DOWN           &kp UP           &kp RIGHT  &magic LAYER_Magic 0
-            >;
-        };
-
-        layer_Typing {
-            bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                 &trans               &trans               &trans               &trans  &trans
- &trans              &trans              &trans              &trans              &trans           &trans                                                           &trans               &trans               &trans               &trans               &trans  &trans
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans           &trans                                                           &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp KEY_LH_C1R4                                                  &kp KEY_RH_C1R4  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &trans              &trans              &trans              &trans              &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans           &trans               &trans               &trans               &trans               &trans  &trans
- &trans              &trans              &trans              &trans              &trans                   &trans  &trans  &trans  &trans  &trans  &trans                                &trans               &trans               &trans               &trans  &trans
+               &kp F1          &kp F2          &kp F3          &kp F4          &kp F5                                                                                                                           &kp F6           &kp F7           &kp F8              &kp F9               &kp F10
+           &caps_word          &kp N1          &kp N2          &kp N3          &kp N4  &kp N5                                                                                                  &kp N6           &kp N7           &kp N8           &kp N9              &kp N0             &kp PSCRN
+              &kp TAB           &kp Q  &LeftRing2 (W)           &kp E           &kp R   &kp T                                                                                                   &kp Y            &kp U            &kp I  &RightRing2 (O)               &kp P               &kp TAB
+              &kp ESC  &LeftPinky (A)  &LeftRing1 (S)  &LeftMiddy (D)  &LeftIndex (F)   &kp G                                                                                                   &kp H  &RightIndex (J)  &RightMiddy (K)  &RightRing1 (L)  &RightPinky (SEMI)               &kp ESC
+            &kp LSHFT           &kp Z           &kp X           &kp C           &kp V   &kp B                   &kp ESC  &kp LG(D)  &tog 15  &kp LS(LG(M))  &kp DEL                  &kp BSPC   &kp N            &kp M        &kp COMMA          &kp DOT            &kp FSLH             &kp RSHFT
+ &magic LAYER_Magic 0        &kp HOME         &kp END       &kp LC(C)       &kp LC(V)          &thumb LAYER_lower SPACE   &kp LGUI  &kp F11        &kp F12  &kp RET  &thumb LAYER_lower SPACE                 &kp LEFT         &kp DOWN           &kp UP           &kp RIGHT  &magic LAYER_Magic 0
             >;
         };
 
         layer_LeftPinky {
             bindings = <
- &left_pinky_tap KEY_LH_C6R1  &left_pinky_tap KEY_LH_C5R1  &left_pinky_tap KEY_LH_C4R1  &left_pinky_tap KEY_LH_C3R1  &left_pinky_tap KEY_LH_C2R1                                                                                                                 &trans               &trans               &trans               &trans  &trans
- &left_pinky_tap KEY_LH_C6R2  &left_pinky_tap KEY_LH_C5R2  &left_pinky_tap KEY_LH_C4R2  &left_pinky_tap KEY_LH_C3R2  &left_pinky_tap KEY_LH_C2R2  &left_pinky_tap KEY_LH_C1R2                                                               &trans               &trans               &trans               &trans               &trans  &trans
- &left_pinky_tap KEY_LH_C6R3  &left_pinky_tap KEY_LH_C5R3              &LeftPinkyRing2  &left_pinky_tap KEY_LH_C3R3  &left_pinky_tap KEY_LH_C2R3  &left_pinky_tap KEY_LH_C1R3                                                               &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &left_pinky_tap KEY_LH_C6R4                        &none              &LeftPinkyRing1              &LeftPinkyMiddy              &LeftPinkyIndex  &left_pinky_tap KEY_LH_C1R4                                                  &kp RIGHT_PLAIN_KEY  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &left_pinky_tap KEY_LH_C6R5  &left_pinky_tap KEY_LH_C5R5  &left_pinky_tap KEY_LH_C4R5  &left_pinky_tap KEY_LH_C3R5  &left_pinky_tap KEY_LH_C2R5  &left_pinky_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans               &trans  &trans
-                      &trans  &left_pinky_tap KEY_LH_C5R6  &left_pinky_tap KEY_LH_C4R6  &left_pinky_tap KEY_LH_C3R6  &left_pinky_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                                    &trans               &trans               &trans               &trans  &trans
+ &left_pinky_tap KEY_LH_C6R1  &left_pinky_tap KEY_LH_C5R1  &left_pinky_tap KEY_LH_C4R1  &left_pinky_tap KEY_LH_C3R1  &left_pinky_tap KEY_LH_C2R1                                                                                                    &trans               &trans               &trans               &trans  &trans
+ &left_pinky_tap KEY_LH_C6R2  &left_pinky_tap KEY_LH_C5R2  &left_pinky_tap KEY_LH_C4R2  &left_pinky_tap KEY_LH_C3R2  &left_pinky_tap KEY_LH_C2R2  &left_pinky_tap KEY_LH_C1R2                                                  &trans               &trans               &trans               &trans               &trans  &trans
+ &left_pinky_tap KEY_LH_C6R3  &left_pinky_tap KEY_LH_C5R3              &LeftPinkyRing2  &left_pinky_tap KEY_LH_C3R3  &left_pinky_tap KEY_LH_C2R3  &left_pinky_tap KEY_LH_C1R3                                                  &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
+ &left_pinky_tap KEY_LH_C6R4                        &none              &LeftPinkyRing1              &LeftPinkyMiddy              &LeftPinkyIndex  &left_pinky_tap KEY_LH_C1R4                                                  &trans  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
+ &left_pinky_tap KEY_LH_C6R5  &left_pinky_tap KEY_LH_C5R5  &left_pinky_tap KEY_LH_C4R5  &left_pinky_tap KEY_LH_C3R5  &left_pinky_tap KEY_LH_C2R5  &left_pinky_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans  &trans
+                      &trans  &left_pinky_tap KEY_LH_C5R6  &left_pinky_tap KEY_LH_C4R6  &left_pinky_tap KEY_LH_C3R6  &left_pinky_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                       &trans               &trans               &trans               &trans  &trans
             >;
         };
 
         layer_LeftRing1 {
             bindings = <
- &left_ring1_tap KEY_LH_C6R1  &left_ring1_tap KEY_LH_C5R1  &left_ring1_tap KEY_LH_C4R1  &left_ring1_tap KEY_LH_C3R1  &left_ring1_tap KEY_LH_C2R1                                                                                                                 &trans               &trans               &trans               &trans  &trans
- &left_ring1_tap KEY_LH_C6R2  &left_ring1_tap KEY_LH_C5R2  &left_ring1_tap KEY_LH_C4R2  &left_ring1_tap KEY_LH_C3R2  &left_ring1_tap KEY_LH_C2R2  &left_ring1_tap KEY_LH_C1R2                                                               &trans               &trans               &trans               &trans               &trans  &trans
- &left_ring1_tap KEY_LH_C6R3  &left_ring1_tap KEY_LH_C5R3              &LeftRing1Ring2  &left_ring1_tap KEY_LH_C3R3  &left_ring1_tap KEY_LH_C2R3  &left_ring1_tap KEY_LH_C1R3                                                               &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &left_ring1_tap KEY_LH_C6R4              &LeftRing1Pinky                        &none              &LeftRing1Middy              &LeftRing1Index  &left_ring1_tap KEY_LH_C1R4                                                  &kp RIGHT_PLAIN_KEY  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &left_ring1_tap KEY_LH_C6R5  &left_ring1_tap KEY_LH_C5R5  &left_ring1_tap KEY_LH_C4R5  &left_ring1_tap KEY_LH_C3R5  &left_ring1_tap KEY_LH_C2R5  &left_ring1_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans               &trans  &trans
-                      &trans  &left_ring1_tap KEY_LH_C5R6  &left_ring1_tap KEY_LH_C4R6  &left_ring1_tap KEY_LH_C3R6  &left_ring1_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                                    &trans               &trans               &trans               &trans  &trans
+ &left_ring1_tap KEY_LH_C6R1  &left_ring1_tap KEY_LH_C5R1  &left_ring1_tap KEY_LH_C4R1  &left_ring1_tap KEY_LH_C3R1  &left_ring1_tap KEY_LH_C2R1                                                                                                    &trans               &trans               &trans               &trans  &trans
+ &left_ring1_tap KEY_LH_C6R2  &left_ring1_tap KEY_LH_C5R2  &left_ring1_tap KEY_LH_C4R2  &left_ring1_tap KEY_LH_C3R2  &left_ring1_tap KEY_LH_C2R2  &left_ring1_tap KEY_LH_C1R2                                                  &trans               &trans               &trans               &trans               &trans  &trans
+ &left_ring1_tap KEY_LH_C6R3  &left_ring1_tap KEY_LH_C5R3              &LeftRing1Ring2  &left_ring1_tap KEY_LH_C3R3  &left_ring1_tap KEY_LH_C2R3  &left_ring1_tap KEY_LH_C1R3                                                  &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
+ &left_ring1_tap KEY_LH_C6R4              &LeftRing1Pinky                        &none              &LeftRing1Middy              &LeftRing1Index  &left_ring1_tap KEY_LH_C1R4                                                  &trans  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
+ &left_ring1_tap KEY_LH_C6R5  &left_ring1_tap KEY_LH_C5R5  &left_ring1_tap KEY_LH_C4R5  &left_ring1_tap KEY_LH_C3R5  &left_ring1_tap KEY_LH_C2R5  &left_ring1_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans  &trans
+                      &trans  &left_ring1_tap KEY_LH_C5R6  &left_ring1_tap KEY_LH_C4R6  &left_ring1_tap KEY_LH_C3R6  &left_ring1_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                       &trans               &trans               &trans               &trans  &trans
             >;
         };
 
         layer_LeftRing2 {
             bindings = <
- &left_ring2_tap KEY_LH_C6R1  &left_ring2_tap KEY_LH_C5R1  &left_ring2_tap KEY_LH_C4R1  &left_ring2_tap KEY_LH_C3R1  &left_ring2_tap KEY_LH_C2R1                                                                                                                 &trans               &trans               &trans               &trans  &trans
- &left_ring2_tap KEY_LH_C6R2  &left_ring2_tap KEY_LH_C5R2  &left_ring2_tap KEY_LH_C4R2  &left_ring2_tap KEY_LH_C3R2  &left_ring2_tap KEY_LH_C2R2  &left_ring2_tap KEY_LH_C1R2                                                               &trans               &trans               &trans               &trans               &trans  &trans
- &left_ring2_tap KEY_LH_C6R3  &left_ring2_tap KEY_LH_C5R3                        &none  &left_ring2_tap KEY_LH_C3R3  &left_ring2_tap KEY_LH_C2R3  &left_ring2_tap KEY_LH_C1R3                                                               &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &left_ring2_tap KEY_LH_C6R4              &LeftRing2Pinky              &LeftRing2Ring1              &LeftRing2Middy              &LeftRing2Index  &left_ring2_tap KEY_LH_C1R4                                                  &kp RIGHT_PLAIN_KEY  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &left_ring2_tap KEY_LH_C6R5  &left_ring2_tap KEY_LH_C5R5  &left_ring2_tap KEY_LH_C4R5  &left_ring2_tap KEY_LH_C3R5  &left_ring2_tap KEY_LH_C2R5  &left_ring2_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans               &trans  &trans
-                      &trans  &left_ring2_tap KEY_LH_C5R6  &left_ring2_tap KEY_LH_C4R6  &left_ring2_tap KEY_LH_C3R6  &left_ring2_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                                    &trans               &trans               &trans               &trans  &trans
+ &left_ring2_tap KEY_LH_C6R1  &left_ring2_tap KEY_LH_C5R1  &left_ring2_tap KEY_LH_C4R1  &left_ring2_tap KEY_LH_C3R1  &left_ring2_tap KEY_LH_C2R1                                                                                                    &trans               &trans               &trans               &trans  &trans
+ &left_ring2_tap KEY_LH_C6R2  &left_ring2_tap KEY_LH_C5R2  &left_ring2_tap KEY_LH_C4R2  &left_ring2_tap KEY_LH_C3R2  &left_ring2_tap KEY_LH_C2R2  &left_ring2_tap KEY_LH_C1R2                                                  &trans               &trans               &trans               &trans               &trans  &trans
+ &left_ring2_tap KEY_LH_C6R3  &left_ring2_tap KEY_LH_C5R3                        &none  &left_ring2_tap KEY_LH_C3R3  &left_ring2_tap KEY_LH_C2R3  &left_ring2_tap KEY_LH_C1R3                                                  &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
+ &left_ring2_tap KEY_LH_C6R4              &LeftRing2Pinky              &LeftRing2Ring1              &LeftRing2Middy              &LeftRing2Index  &left_ring2_tap KEY_LH_C1R4                                                  &trans  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
+ &left_ring2_tap KEY_LH_C6R5  &left_ring2_tap KEY_LH_C5R5  &left_ring2_tap KEY_LH_C4R5  &left_ring2_tap KEY_LH_C3R5  &left_ring2_tap KEY_LH_C2R5  &left_ring2_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans  &trans
+                      &trans  &left_ring2_tap KEY_LH_C5R6  &left_ring2_tap KEY_LH_C4R6  &left_ring2_tap KEY_LH_C3R6  &left_ring2_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                       &trans               &trans               &trans               &trans  &trans
             >;
         };
 
         layer_LeftMiddy {
             bindings = <
- &left_middy_tap KEY_LH_C6R1  &left_middy_tap KEY_LH_C5R1  &left_middy_tap KEY_LH_C4R1  &left_middy_tap KEY_LH_C3R1  &left_middy_tap KEY_LH_C2R1                                                                                                                 &trans               &trans               &trans               &trans  &trans
- &left_middy_tap KEY_LH_C6R2  &left_middy_tap KEY_LH_C5R2  &left_middy_tap KEY_LH_C4R2  &left_middy_tap KEY_LH_C3R2  &left_middy_tap KEY_LH_C2R2  &left_middy_tap KEY_LH_C1R2                                                               &trans               &trans               &trans               &trans               &trans  &trans
- &left_middy_tap KEY_LH_C6R3  &left_middy_tap KEY_LH_C5R3              &LeftMiddyRing2  &left_middy_tap KEY_LH_C3R3  &left_middy_tap KEY_LH_C2R3  &left_middy_tap KEY_LH_C1R3                                                               &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &left_middy_tap KEY_LH_C6R4              &LeftMiddyPinky              &LeftMiddyRing1                        &none              &LeftMiddyIndex  &left_middy_tap KEY_LH_C1R4                                                  &kp RIGHT_PLAIN_KEY  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &left_middy_tap KEY_LH_C6R5  &left_middy_tap KEY_LH_C5R5  &left_middy_tap KEY_LH_C4R5  &left_middy_tap KEY_LH_C3R5  &left_middy_tap KEY_LH_C2R5  &left_middy_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans               &trans  &trans
-                      &trans  &left_middy_tap KEY_LH_C5R6  &left_middy_tap KEY_LH_C4R6  &left_middy_tap KEY_LH_C3R6  &left_middy_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                                    &trans               &trans               &trans               &trans  &trans
+ &left_middy_tap KEY_LH_C6R1  &left_middy_tap KEY_LH_C5R1  &left_middy_tap KEY_LH_C4R1  &left_middy_tap KEY_LH_C3R1  &left_middy_tap KEY_LH_C2R1                                                                                                    &trans               &trans               &trans               &trans  &trans
+ &left_middy_tap KEY_LH_C6R2  &left_middy_tap KEY_LH_C5R2  &left_middy_tap KEY_LH_C4R2  &left_middy_tap KEY_LH_C3R2  &left_middy_tap KEY_LH_C2R2  &left_middy_tap KEY_LH_C1R2                                                  &trans               &trans               &trans               &trans               &trans  &trans
+ &left_middy_tap KEY_LH_C6R3  &left_middy_tap KEY_LH_C5R3              &LeftMiddyRing2  &left_middy_tap KEY_LH_C3R3  &left_middy_tap KEY_LH_C2R3  &left_middy_tap KEY_LH_C1R3                                                  &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
+ &left_middy_tap KEY_LH_C6R4              &LeftMiddyPinky              &LeftMiddyRing1                        &none              &LeftMiddyIndex  &left_middy_tap KEY_LH_C1R4                                                  &trans  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
+ &left_middy_tap KEY_LH_C6R5  &left_middy_tap KEY_LH_C5R5  &left_middy_tap KEY_LH_C4R5  &left_middy_tap KEY_LH_C3R5  &left_middy_tap KEY_LH_C2R5  &left_middy_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans  &trans
+                      &trans  &left_middy_tap KEY_LH_C5R6  &left_middy_tap KEY_LH_C4R6  &left_middy_tap KEY_LH_C3R6  &left_middy_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                       &trans               &trans               &trans               &trans  &trans
             >;
         };
 
         layer_LeftIndex {
             bindings = <
- &left_index_tap KEY_LH_C6R1  &left_index_tap KEY_LH_C5R1  &left_index_tap KEY_LH_C4R1  &left_index_tap KEY_LH_C3R1  &left_index_tap KEY_LH_C2R1                                                                                                                 &trans               &trans               &trans               &trans  &trans
- &left_index_tap KEY_LH_C6R2  &left_index_tap KEY_LH_C5R2  &left_index_tap KEY_LH_C4R2  &left_index_tap KEY_LH_C3R2  &left_index_tap KEY_LH_C2R2  &left_index_tap KEY_LH_C1R2                                                               &trans               &trans               &trans               &trans               &trans  &trans
- &left_index_tap KEY_LH_C6R3  &left_index_tap KEY_LH_C5R3              &LeftIndexRing2  &left_index_tap KEY_LH_C3R3  &left_index_tap KEY_LH_C2R3  &left_index_tap KEY_LH_C1R3                                                               &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
- &left_index_tap KEY_LH_C6R4              &LeftIndexPinky              &LeftIndexRing1              &LeftIndexMiddy                        &none  &left_index_tap KEY_LH_C1R4                                                  &kp RIGHT_PLAIN_KEY  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
- &left_index_tap KEY_LH_C6R5  &left_index_tap KEY_LH_C5R5  &left_index_tap KEY_LH_C4R5  &left_index_tap KEY_LH_C3R5  &left_index_tap KEY_LH_C2R5  &left_index_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans               &trans  &trans
-                      &trans  &left_index_tap KEY_LH_C5R6  &left_index_tap KEY_LH_C4R6  &left_index_tap KEY_LH_C3R6  &left_index_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                                    &trans               &trans               &trans               &trans  &trans
+ &left_index_tap KEY_LH_C6R1  &left_index_tap KEY_LH_C5R1  &left_index_tap KEY_LH_C4R1  &left_index_tap KEY_LH_C3R1  &left_index_tap KEY_LH_C2R1                                                                                                    &trans               &trans               &trans               &trans  &trans
+ &left_index_tap KEY_LH_C6R2  &left_index_tap KEY_LH_C5R2  &left_index_tap KEY_LH_C4R2  &left_index_tap KEY_LH_C3R2  &left_index_tap KEY_LH_C2R2  &left_index_tap KEY_LH_C1R2                                                  &trans               &trans               &trans               &trans               &trans  &trans
+ &left_index_tap KEY_LH_C6R3  &left_index_tap KEY_LH_C5R3              &LeftIndexRing2  &left_index_tap KEY_LH_C3R3  &left_index_tap KEY_LH_C2R3  &left_index_tap KEY_LH_C1R3                                                  &trans               &trans               &trans  &kp RIGHT_RING2_KEY               &trans  &trans
+ &left_index_tap KEY_LH_C6R4              &LeftIndexPinky              &LeftIndexRing1              &LeftIndexMiddy                        &none  &left_index_tap KEY_LH_C1R4                                                  &trans  &kp RIGHT_INDEX_KEY  &kp RIGHT_MIDDY_KEY  &kp RIGHT_RING1_KEY  &kp RIGHT_PINKY_KEY  &trans
+ &left_index_tap KEY_LH_C6R5  &left_index_tap KEY_LH_C5R5  &left_index_tap KEY_LH_C4R5  &left_index_tap KEY_LH_C3R5  &left_index_tap KEY_LH_C2R5  &left_index_tap KEY_LH_C1R5  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans               &trans               &trans               &trans  &trans
+                      &trans  &left_index_tap KEY_LH_C5R6  &left_index_tap KEY_LH_C4R6  &left_index_tap KEY_LH_C3R6  &left_index_tap KEY_LH_C2R6                               &trans  &trans  &trans  &trans  &trans  &trans                       &trans               &trans               &trans               &trans  &trans
             >;
         };
 
         layer_RightPinky {
             bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                    &right_pinky_tap KEY_RH_C2R1  &right_pinky_tap KEY_RH_C3R1  &right_pinky_tap KEY_RH_C4R1  &right_pinky_tap KEY_RH_C5R1  &right_pinky_tap KEY_RH_C6R1
- &trans              &trans              &trans              &trans              &trans              &trans                                                  &right_pinky_tap KEY_RH_C1R2  &right_pinky_tap KEY_RH_C2R2  &right_pinky_tap KEY_RH_C3R2  &right_pinky_tap KEY_RH_C4R2  &right_pinky_tap KEY_RH_C5R2  &right_pinky_tap KEY_RH_C6R2
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans              &trans                                                  &right_pinky_tap KEY_RH_C1R3  &right_pinky_tap KEY_RH_C2R3  &right_pinky_tap KEY_RH_C3R3              &RightPinkyRing2  &right_pinky_tap KEY_RH_C5R3  &right_pinky_tap KEY_RH_C6R3
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp LEFT_PLAIN_KEY                                                  &right_pinky_tap KEY_RH_C1R4              &RightPinkyIndex              &RightPinkyMiddy              &RightPinkyRing1                         &none  &right_pinky_tap KEY_RH_C6R4
- &trans              &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_pinky_tap KEY_RH_C1R5  &right_pinky_tap KEY_RH_C2R5  &right_pinky_tap KEY_RH_C3R5  &right_pinky_tap KEY_RH_C4R5  &right_pinky_tap KEY_RH_C5R5  &right_pinky_tap KEY_RH_C6R5
- &trans              &trans              &trans              &trans              &trans                      &trans  &trans  &trans  &trans  &trans  &trans                                &right_pinky_tap KEY_RH_C2R6  &right_pinky_tap KEY_RH_C3R6  &right_pinky_tap KEY_RH_C4R6  &right_pinky_tap KEY_RH_C5R6                        &trans
+ &trans              &trans              &trans              &trans              &trans                                                                                        &right_pinky_tap KEY_RH_C2R1  &right_pinky_tap KEY_RH_C3R1  &right_pinky_tap KEY_RH_C4R1  &right_pinky_tap KEY_RH_C5R1  &right_pinky_tap KEY_RH_C6R1
+ &trans              &trans              &trans              &trans              &trans  &trans                                                  &right_pinky_tap KEY_RH_C1R2  &right_pinky_tap KEY_RH_C2R2  &right_pinky_tap KEY_RH_C3R2  &right_pinky_tap KEY_RH_C4R2  &right_pinky_tap KEY_RH_C5R2  &right_pinky_tap KEY_RH_C6R2
+ &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans  &trans                                                  &right_pinky_tap KEY_RH_C1R3  &right_pinky_tap KEY_RH_C2R3  &right_pinky_tap KEY_RH_C3R3              &RightPinkyRing2  &right_pinky_tap KEY_RH_C5R3  &right_pinky_tap KEY_RH_C6R3
+ &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &trans                                                  &right_pinky_tap KEY_RH_C1R4              &RightPinkyIndex              &RightPinkyMiddy              &RightPinkyRing1                         &none  &right_pinky_tap KEY_RH_C6R4
+ &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_pinky_tap KEY_RH_C1R5  &right_pinky_tap KEY_RH_C2R5  &right_pinky_tap KEY_RH_C3R5  &right_pinky_tap KEY_RH_C4R5  &right_pinky_tap KEY_RH_C5R5  &right_pinky_tap KEY_RH_C6R5
+ &trans              &trans              &trans              &trans              &trans          &trans  &trans  &trans  &trans  &trans  &trans                                &right_pinky_tap KEY_RH_C2R6  &right_pinky_tap KEY_RH_C3R6  &right_pinky_tap KEY_RH_C4R6  &right_pinky_tap KEY_RH_C5R6                        &trans
             >;
         };
 
         layer_RightRing1 {
             bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                    &right_ring1_tap KEY_RH_C2R1  &right_ring1_tap KEY_RH_C3R1  &right_ring1_tap KEY_RH_C4R1  &right_ring1_tap KEY_RH_C5R1  &right_ring1_tap KEY_RH_C6R1
- &trans              &trans              &trans              &trans              &trans              &trans                                                  &right_ring1_tap KEY_RH_C1R2  &right_ring1_tap KEY_RH_C2R2  &right_ring1_tap KEY_RH_C3R2  &right_ring1_tap KEY_RH_C4R2  &right_ring1_tap KEY_RH_C5R2  &right_ring1_tap KEY_RH_C6R2
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans              &trans                                                  &right_ring1_tap KEY_RH_C1R3  &right_ring1_tap KEY_RH_C2R3  &right_ring1_tap KEY_RH_C3R3              &RightRing1Ring2  &right_ring1_tap KEY_RH_C5R3  &right_ring1_tap KEY_RH_C6R3
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp LEFT_PLAIN_KEY                                                  &right_ring1_tap KEY_RH_C1R4              &RightRing1Index              &RightRing1Middy                         &none              &RightRing1Pinky  &right_ring1_tap KEY_RH_C6R4
- &trans              &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_ring1_tap KEY_RH_C1R5  &right_ring1_tap KEY_RH_C2R5  &right_ring1_tap KEY_RH_C3R5  &right_ring1_tap KEY_RH_C4R5  &right_ring1_tap KEY_RH_C5R5  &right_ring1_tap KEY_RH_C6R5
- &trans              &trans              &trans              &trans              &trans                      &trans  &trans  &trans  &trans  &trans  &trans                                &right_ring1_tap KEY_RH_C2R6  &right_ring1_tap KEY_RH_C3R6  &right_ring1_tap KEY_RH_C4R6  &right_ring1_tap KEY_RH_C5R6                        &trans
+ &trans              &trans              &trans              &trans              &trans                                                                                        &right_ring1_tap KEY_RH_C2R1  &right_ring1_tap KEY_RH_C3R1  &right_ring1_tap KEY_RH_C4R1  &right_ring1_tap KEY_RH_C5R1  &right_ring1_tap KEY_RH_C6R1
+ &trans              &trans              &trans              &trans              &trans  &trans                                                  &right_ring1_tap KEY_RH_C1R2  &right_ring1_tap KEY_RH_C2R2  &right_ring1_tap KEY_RH_C3R2  &right_ring1_tap KEY_RH_C4R2  &right_ring1_tap KEY_RH_C5R2  &right_ring1_tap KEY_RH_C6R2
+ &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans  &trans                                                  &right_ring1_tap KEY_RH_C1R3  &right_ring1_tap KEY_RH_C2R3  &right_ring1_tap KEY_RH_C3R3              &RightRing1Ring2  &right_ring1_tap KEY_RH_C5R3  &right_ring1_tap KEY_RH_C6R3
+ &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &trans                                                  &right_ring1_tap KEY_RH_C1R4              &RightRing1Index              &RightRing1Middy                         &none              &RightRing1Pinky  &right_ring1_tap KEY_RH_C6R4
+ &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_ring1_tap KEY_RH_C1R5  &right_ring1_tap KEY_RH_C2R5  &right_ring1_tap KEY_RH_C3R5  &right_ring1_tap KEY_RH_C4R5  &right_ring1_tap KEY_RH_C5R5  &right_ring1_tap KEY_RH_C6R5
+ &trans              &trans              &trans              &trans              &trans          &trans  &trans  &trans  &trans  &trans  &trans                                &right_ring1_tap KEY_RH_C2R6  &right_ring1_tap KEY_RH_C3R6  &right_ring1_tap KEY_RH_C4R6  &right_ring1_tap KEY_RH_C5R6                        &trans
             >;
         };
 
         layer_RightRing2 {
             bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                    &right_ring2_tap KEY_RH_C2R1  &right_ring2_tap KEY_RH_C3R1  &right_ring2_tap KEY_RH_C4R1  &right_ring2_tap KEY_RH_C5R1  &right_ring2_tap KEY_RH_C6R1
- &trans              &trans              &trans              &trans              &trans              &trans                                                  &right_ring2_tap KEY_RH_C1R2  &right_ring2_tap KEY_RH_C2R2  &right_ring2_tap KEY_RH_C3R2  &right_ring2_tap KEY_RH_C4R2  &right_ring2_tap KEY_RH_C5R2  &right_ring2_tap KEY_RH_C6R2
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans              &trans                                                  &right_ring2_tap KEY_RH_C1R3  &right_ring2_tap KEY_RH_C2R3  &right_ring2_tap KEY_RH_C3R3                         &none  &right_ring2_tap KEY_RH_C5R3  &right_ring2_tap KEY_RH_C6R3
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp LEFT_PLAIN_KEY                                                  &right_ring2_tap KEY_RH_C1R4              &RightRing2Index              &RightRing2Middy              &RightRing2Ring1              &RightRing2Pinky  &right_ring2_tap KEY_RH_C6R4
- &trans              &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_ring2_tap KEY_RH_C1R5  &right_ring2_tap KEY_RH_C2R5  &right_ring2_tap KEY_RH_C3R5  &right_ring2_tap KEY_RH_C4R5  &right_ring2_tap KEY_RH_C5R5  &right_ring2_tap KEY_RH_C6R5
- &trans              &trans              &trans              &trans              &trans                      &trans  &trans  &trans  &trans  &trans  &trans                                &right_ring2_tap KEY_RH_C2R6  &right_ring2_tap KEY_RH_C3R6  &right_ring2_tap KEY_RH_C4R6  &right_ring2_tap KEY_RH_C5R6                        &trans
+ &trans              &trans              &trans              &trans              &trans                                                                                        &right_ring2_tap KEY_RH_C2R1  &right_ring2_tap KEY_RH_C3R1  &right_ring2_tap KEY_RH_C4R1  &right_ring2_tap KEY_RH_C5R1  &right_ring2_tap KEY_RH_C6R1
+ &trans              &trans              &trans              &trans              &trans  &trans                                                  &right_ring2_tap KEY_RH_C1R2  &right_ring2_tap KEY_RH_C2R2  &right_ring2_tap KEY_RH_C3R2  &right_ring2_tap KEY_RH_C4R2  &right_ring2_tap KEY_RH_C5R2  &right_ring2_tap KEY_RH_C6R2
+ &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans  &trans                                                  &right_ring2_tap KEY_RH_C1R3  &right_ring2_tap KEY_RH_C2R3  &right_ring2_tap KEY_RH_C3R3                         &none  &right_ring2_tap KEY_RH_C5R3  &right_ring2_tap KEY_RH_C6R3
+ &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &trans                                                  &right_ring2_tap KEY_RH_C1R4              &RightRing2Index              &RightRing2Middy              &RightRing2Ring1              &RightRing2Pinky  &right_ring2_tap KEY_RH_C6R4
+ &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_ring2_tap KEY_RH_C1R5  &right_ring2_tap KEY_RH_C2R5  &right_ring2_tap KEY_RH_C3R5  &right_ring2_tap KEY_RH_C4R5  &right_ring2_tap KEY_RH_C5R5  &right_ring2_tap KEY_RH_C6R5
+ &trans              &trans              &trans              &trans              &trans          &trans  &trans  &trans  &trans  &trans  &trans                                &right_ring2_tap KEY_RH_C2R6  &right_ring2_tap KEY_RH_C3R6  &right_ring2_tap KEY_RH_C4R6  &right_ring2_tap KEY_RH_C5R6                        &trans
             >;
         };
 
         layer_RightMiddy {
             bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                    &right_middy_tap KEY_RH_C2R1  &right_middy_tap KEY_RH_C3R1  &right_middy_tap KEY_RH_C4R1  &right_middy_tap KEY_RH_C5R1  &right_middy_tap KEY_RH_C6R1
- &trans              &trans              &trans              &trans              &trans              &trans                                                  &right_middy_tap KEY_RH_C1R2  &right_middy_tap KEY_RH_C2R2  &right_middy_tap KEY_RH_C3R2  &right_middy_tap KEY_RH_C4R2  &right_middy_tap KEY_RH_C5R2  &right_middy_tap KEY_RH_C6R2
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans              &trans                                                  &right_middy_tap KEY_RH_C1R3  &right_middy_tap KEY_RH_C2R3  &right_middy_tap KEY_RH_C3R3              &RightMiddyRing2  &right_middy_tap KEY_RH_C5R3  &right_middy_tap KEY_RH_C6R3
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp LEFT_PLAIN_KEY                                                  &right_middy_tap KEY_RH_C1R4              &RightMiddyIndex                         &none              &RightMiddyRing1              &RightMiddyPinky  &right_middy_tap KEY_RH_C6R4
- &trans              &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_middy_tap KEY_RH_C1R5  &right_middy_tap KEY_RH_C2R5  &right_middy_tap KEY_RH_C3R5  &right_middy_tap KEY_RH_C4R5  &right_middy_tap KEY_RH_C5R5  &right_middy_tap KEY_RH_C6R5
- &trans              &trans              &trans              &trans              &trans                      &trans  &trans  &trans  &trans  &trans  &trans                                &right_middy_tap KEY_RH_C2R6  &right_middy_tap KEY_RH_C3R6  &right_middy_tap KEY_RH_C4R6  &right_middy_tap KEY_RH_C5R6                        &trans
+ &trans              &trans              &trans              &trans              &trans                                                                                        &right_middy_tap KEY_RH_C2R1  &right_middy_tap KEY_RH_C3R1  &right_middy_tap KEY_RH_C4R1  &right_middy_tap KEY_RH_C5R1  &right_middy_tap KEY_RH_C6R1
+ &trans              &trans              &trans              &trans              &trans  &trans                                                  &right_middy_tap KEY_RH_C1R2  &right_middy_tap KEY_RH_C2R2  &right_middy_tap KEY_RH_C3R2  &right_middy_tap KEY_RH_C4R2  &right_middy_tap KEY_RH_C5R2  &right_middy_tap KEY_RH_C6R2
+ &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans  &trans                                                  &right_middy_tap KEY_RH_C1R3  &right_middy_tap KEY_RH_C2R3  &right_middy_tap KEY_RH_C3R3              &RightMiddyRing2  &right_middy_tap KEY_RH_C5R3  &right_middy_tap KEY_RH_C6R3
+ &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &trans                                                  &right_middy_tap KEY_RH_C1R4              &RightMiddyIndex                         &none              &RightMiddyRing1              &RightMiddyPinky  &right_middy_tap KEY_RH_C6R4
+ &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_middy_tap KEY_RH_C1R5  &right_middy_tap KEY_RH_C2R5  &right_middy_tap KEY_RH_C3R5  &right_middy_tap KEY_RH_C4R5  &right_middy_tap KEY_RH_C5R5  &right_middy_tap KEY_RH_C6R5
+ &trans              &trans              &trans              &trans              &trans          &trans  &trans  &trans  &trans  &trans  &trans                                &right_middy_tap KEY_RH_C2R6  &right_middy_tap KEY_RH_C3R6  &right_middy_tap KEY_RH_C4R6  &right_middy_tap KEY_RH_C5R6                        &trans
             >;
         };
 
         layer_RightIndex {
             bindings = <
- &trans              &trans              &trans              &trans              &trans                                                                                                    &right_index_tap KEY_RH_C2R1  &right_index_tap KEY_RH_C3R1  &right_index_tap KEY_RH_C4R1  &right_index_tap KEY_RH_C5R1  &right_index_tap KEY_RH_C6R1
- &trans              &trans              &trans              &trans              &trans              &trans                                                  &right_index_tap KEY_RH_C1R2  &right_index_tap KEY_RH_C2R2  &right_index_tap KEY_RH_C3R2  &right_index_tap KEY_RH_C4R2  &right_index_tap KEY_RH_C5R2  &right_index_tap KEY_RH_C6R2
- &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans              &trans                                                  &right_index_tap KEY_RH_C1R3  &right_index_tap KEY_RH_C2R3  &right_index_tap KEY_RH_C3R3              &RightIndexRing2  &right_index_tap KEY_RH_C5R3  &right_index_tap KEY_RH_C6R3
- &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &kp LEFT_PLAIN_KEY                                                  &right_index_tap KEY_RH_C1R4                         &none              &RightIndexMiddy              &RightIndexRing1              &RightIndexPinky  &right_index_tap KEY_RH_C6R4
- &trans              &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_index_tap KEY_RH_C1R5  &right_index_tap KEY_RH_C2R5  &right_index_tap KEY_RH_C3R5  &right_index_tap KEY_RH_C4R5  &right_index_tap KEY_RH_C5R5  &right_index_tap KEY_RH_C6R5
- &trans              &trans              &trans              &trans              &trans                      &trans  &trans  &trans  &trans  &trans  &trans                                &right_index_tap KEY_RH_C2R6  &right_index_tap KEY_RH_C3R6  &right_index_tap KEY_RH_C4R6  &right_index_tap KEY_RH_C5R6                        &trans
+ &trans              &trans              &trans              &trans              &trans                                                                                        &right_index_tap KEY_RH_C2R1  &right_index_tap KEY_RH_C3R1  &right_index_tap KEY_RH_C4R1  &right_index_tap KEY_RH_C5R1  &right_index_tap KEY_RH_C6R1
+ &trans              &trans              &trans              &trans              &trans  &trans                                                  &right_index_tap KEY_RH_C1R2  &right_index_tap KEY_RH_C2R2  &right_index_tap KEY_RH_C3R2  &right_index_tap KEY_RH_C4R2  &right_index_tap KEY_RH_C5R2  &right_index_tap KEY_RH_C6R2
+ &trans              &trans  &kp LEFT_RING2_KEY              &trans              &trans  &trans                                                  &right_index_tap KEY_RH_C1R3  &right_index_tap KEY_RH_C2R3  &right_index_tap KEY_RH_C3R3              &RightIndexRing2  &right_index_tap KEY_RH_C5R3  &right_index_tap KEY_RH_C6R3
+ &trans  &kp LEFT_PINKY_KEY  &kp LEFT_RING1_KEY  &kp LEFT_MIDDY_KEY  &kp LEFT_INDEX_KEY  &trans                                                  &right_index_tap KEY_RH_C1R4                         &none              &RightIndexMiddy              &RightIndexRing1              &RightIndexPinky  &right_index_tap KEY_RH_C6R4
+ &trans              &trans              &trans              &trans              &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &right_index_tap KEY_RH_C1R5  &right_index_tap KEY_RH_C2R5  &right_index_tap KEY_RH_C3R5  &right_index_tap KEY_RH_C4R5  &right_index_tap KEY_RH_C5R5  &right_index_tap KEY_RH_C6R5
+ &trans              &trans              &trans              &trans              &trans          &trans  &trans  &trans  &trans  &trans  &trans                                &right_index_tap KEY_RH_C2R6  &right_index_tap KEY_RH_C3R6  &right_index_tap KEY_RH_C4R6  &right_index_tap KEY_RH_C5R6                        &trans
             >;
         };
 
@@ -3082,7 +2217,7 @@ behaviors {
        &to 0            &to 1            &to 2            &to 3            &to 4            &to 5                                                         &none   &none   &none   &none   &none           &none
        &none  &rgb_ug RGB_SPI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG                                                         &none   &none   &none   &none   &none           &none
  &bootloader  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF                                                         &none   &none   &none   &none   &none     &bootloader
-  &sys_reset            &none            &none            &none            &none            &none   &bt_2   &bt_3       &tog 12   &none   &none   &none   &none   &none   &none   &none   &none      &sys_reset
+  &sys_reset            &none            &none            &none            &none            &none   &bt_2   &bt_3       &tog 11   &none   &none   &none   &none   &none   &none   &none   &none      &sys_reset
        &none            &none            &none            &none            &none                    &bt_0   &bt_1  &out OUT_USB   &none   &none   &none           &none   &none   &none   &none           &none
             >;
         };
@@ -3100,12 +2235,12 @@ behaviors {
 
         layer_both {
             bindings = <
- &trans  &trans  &trans  &trans  &trans                                                                      &trans  &trans     &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                    &trans    &trans  &trans     &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                    &trans    &trans  &trans     &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans                                                  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &trans  &trans
- &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans     &trans  &trans  &trans
- &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans              &trans  &trans     &trans  &trans  &trans
+ &trans          &trans          &trans          &trans          &trans                                                                              &trans  &trans     &trans  &trans  &trans
+ &trans          &trans          &trans          &trans          &trans          &trans                                                    &trans    &trans  &trans     &trans  &trans  &trans
+ &trans          &trans          &trans          &trans          &trans          &trans                                                    &trans    &trans  &trans     &trans  &trans  &trans
+ &trans  &kp LG(LC(N1))  &kp LG(LC(N2))  &kp LG(LC(N3))  &kp LG(LC(N4))  &kp LG(LC(N5))                                                  &kp LEFT  &kp DOWN  &kp UP  &kp RIGHT  &trans  &trans
+ &trans          &trans          &trans          &trans          &trans          &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans  &trans     &trans  &trans  &trans
+ &trans          &trans          &trans          &trans          &trans                  &trans  &trans  &trans  &trans  &trans  &trans              &trans  &trans     &trans  &trans  &trans
             >;
         };
 
@@ -3116,7 +2251,7 @@ behaviors {
    &kp TAB     &kp Q    &kp W      &kp E      &kp R   &kp T                                                                       &kp Y     &kp U      &kp I    &kp O      &kp P   &kp BSLH
   &kp CAPS     &kp A    &kp S      &kp D      &kp F   &kp G                                                                       &kp H     &kp J      &kp K    &kp L   &kp SEMI    &kp SQT
  &kp LSHFT     &kp Z    &kp X      &kp C      &kp V   &kp B    &kp ESC     &kp P    &to 0  &kp LS(LG(M))  &kp DEL      &kp BSPC   &kp N     &kp M  &kp COMMA  &kp DOT   &kp FSLH  &kp RSHFT
- &kp LCTRL  &kp HOME  &kp END  &kp PG_DN  &kp PG_DN          &kp SPACE  &kp LGUI  &kp F11        &kp F12  &kp RET  &lt 14 SPACE          &kp LEFT   &kp DOWN   &kp UP  &kp RIGHT      &to 0
+ &kp LCTRL  &kp HOME  &kp END  &kp PG_DN  &kp PG_DN          &kp SPACE  &kp LGUI  &kp F11        &kp F12  &kp RET  &lt 13 SPACE          &kp LEFT   &kp DOWN   &kp UP  &kp RIGHT      &to 0
             >;
         };
 
