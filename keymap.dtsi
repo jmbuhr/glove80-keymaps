@@ -47,8 +47,8 @@
 // after typing before you can use home row mods again.  It prevents
 // unintended activation of home row mods when you're actively typing.
 //
-#define HOMEY_STREAK_DECAY 230
-#define LOWER_HOMEY_STREAK_DECAY 150
+#define HOMEY_STREAK_DECAY 100
+#define LOWER_HOMEY_STREAK_DECAY 100
 
 //
 // SHIFTY_HOLDING_TIME defines how long you need to hold (milliseconds)
@@ -105,7 +105,7 @@
 // (i.e. "register" them) for mod-click mouse usage (e.g. Ctrl-Click).
 // This is specifically for secondary keypresses in multi-mod chords.
 //
-#define CHORD_HOLDING_TIME 150
+#define CHORD_HOLDING_TIME 100
 
 //
 // CHORD_STREAK_DECAY defines how long you need to wait (milliseconds)
@@ -154,7 +154,7 @@
 // THUMB_HOLDING_TIME defines how long you need to hold (milliseconds)
 // a thumb key to activate a layer.  Shorter holds are treated as taps.
 //
-#define THUMB_HOLDING_TIME 150
+#define THUMB_HOLDING_TIME 130
 
 //
 // THUMB_REPEAT_DECAY defines how much time you have left (milliseconds)
